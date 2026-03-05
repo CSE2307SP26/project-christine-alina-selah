@@ -2,9 +2,9 @@
 
 ## Team Members:
 
-* 
-* 
-* 
+* Alina
+* Christine
+* Selah
 * 
 
 ## User stories
@@ -20,6 +20,7 @@
 9. A bank adminstrator should be able to add an interest payment to an existing account when necessary.
 
 ## What user stories do you intend to complete next iteration?
+2,3,4,5,6,7
 
 ## Is there anything that you implemented but doesn't currently work?
 
