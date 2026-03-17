@@ -36,7 +36,7 @@ public class BankAccountTest {
     }
 
     @Test
-    public void testWithdrawlWithUnsignificantBalance() {
+    public void testWithdrawlWithInsufficientFund() {
         BankAccount testAccount = new BankAccount();
         testAccount.deposit(15);
         try {
