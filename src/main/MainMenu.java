@@ -2,9 +2,6 @@ package main;
 
 import java.util.Scanner;
 
-// import main.BankAccount;
-// import main.Transfer;
-
 public class MainMenu {
 
     private static final int EXIT_SELECTION = 3;

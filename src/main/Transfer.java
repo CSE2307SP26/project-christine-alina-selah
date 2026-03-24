@@ -1,7 +1,5 @@
 package main;
 
-// import main.BankAccount;
-
 public class Transfer{
 
     public static void transferService(BankAccount fromAccount, BankAccount destinationAccount, double amount) {
