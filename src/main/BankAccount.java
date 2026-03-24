@@ -20,16 +20,12 @@ public class BankAccount {
         return this.balance;
     }
 
-    public void transfer (BankAccount destination, double amount) {
-        if (destination == null) {
-            throw new IllegalArgumentException("Bank account does not exist.");
-        }
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Amount must be greater than 0.");
-        }
-        if (this.balance < amount) {
-            throw new IllegalArgumentException("Not enough balance to perform transfer.");
-        }
+    public void increaseBalance(double amount) {
+        this.balance += amount;
+    }
+
+    public void decreaseBalance(double amount) {
         this.balance -= amount;
     }
+
 }
