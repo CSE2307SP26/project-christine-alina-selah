@@ -20,4 +20,12 @@ public class BankAccount {
         return this.balance;
     }
 
+    public void increaseBalance(double amount) {
+        this.balance += amount;
+    }
+
+    public void decreaseBalance(double amount) {
+        this.balance -= amount;
+    }
+
 }
