@@ -4,8 +4,13 @@ import java.util.Scanner;
 
 public class MainMenu {
 
+<<<<<<< HEAD
     private static final int EXIT_SELECTION = 3;
 	private static final int MAX_SELECTION = 3;
+=======
+    private static final int EXIT_SELECTION = 4;
+	private static final int MAX_SELECTION = 4;
+>>>>>>> withdrawal
 
 	private BankAccount userAccount;
     private BankAccount secondAccount;
@@ -21,8 +26,13 @@ public class MainMenu {
         System.out.println("Welcome to the 237 Bank App!");
         
         System.out.println("1. Make a deposit");
+<<<<<<< HEAD
         System.out.println("2. Make a transfer");
         System.out.println("3. Exit the app");
+=======
+        System.out.println("3. Withdrawl money");
+        System.out.println("2. Exit the app");
+>>>>>>> withdrawal
 
     }
 
@@ -39,6 +49,7 @@ public class MainMenu {
         switch (selection) {
             case 1:
                 performDeposit();
+<<<<<<< HEAD
                 break;
 
             case 2:
@@ -49,6 +60,10 @@ public class MainMenu {
                 System.out.println("Goodbye");
                 break;
             default:
+=======
+            case 3:
+                performWithdrawal();
+>>>>>>> withdrawal
                 break;
         }
     }
@@ -57,11 +72,12 @@ public class MainMenu {
         double depositAmount = -1;
         while(depositAmount < 0) {
             System.out.print("How much would you like to deposit: ");
-            depositAmount = keyboardInput.nextInt();
+            depositAmount = keyboardInput.nextDouble();
         }
         userAccount.deposit(depositAmount);
     }
 
+<<<<<<< HEAD
     public void performTransfer() {
         double transferAmount = -1;
         while(transferAmount < 0) {
@@ -70,6 +86,17 @@ public class MainMenu {
 
         }
         Transfer.transferService(userAccount, secondAccount, transferAmount);
+=======
+    public void performWithdrawal() {
+        double withdrawlAmount = -1;
+
+        while (withdrawlAmount < 0) {
+            System.out.println("How much would you like to withdrawl: ");
+            withdrawlAmount = keyboardInput.nextDouble();
+        }
+
+        Withdrawal.withdrawlMoney(userAccount, withdrawlAmount);
+>>>>>>> withdrawal
     }
 
     public void run() {

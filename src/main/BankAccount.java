@@ -20,6 +20,7 @@ public class BankAccount {
         return this.balance;
     }
 
+<<<<<<< HEAD
     public void increaseBalance(double amount) {
         this.balance += amount;
     }
@@ -28,4 +29,6 @@ public class BankAccount {
         this.balance -= amount;
     }
 
+=======
+>>>>>>> withdrawal
 }
