@@ -20,13 +20,4 @@ public class BankAccount {
         return this.balance;
     }
 
-    public void withdrawl (double amount) {
-        if (amount <=0) {
-            throw new IllegalArgumentException("Amount must be greater than 0.");
-        }
-        if (this.balance < amount) {
-            throw new IllegalArgumentException("Not enough balance.");
-        }
-        this.balance -= amount;
-    }
 }
