@@ -9,7 +9,7 @@ public class BankAccount {
     }
 
     public void deposit(double amount) {
-        if(amount > 0) {
+        if (amount > 0) {
             this.balance += amount;
         } else {
             throw new IllegalArgumentException();
@@ -19,4 +19,13 @@ public class BankAccount {
     public double getBalance() {
         return this.balance;
     }
+
+    public void increaseBalance(double amount) {
+        this.balance += amount;
+    }
+
+    public void decreaseBalance(double amount) {
+        this.balance -= amount;
+    }
+
 }

@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 2;
+    private static final int EXIT_SELECTION = 5;
     private static final int MAX_SELECTION = 5;
 
     private BankAccount userAccount;
@@ -18,6 +18,7 @@ public class MainMenu {
 
     public MainMenu() {
         this.userAccount = new BankAccount();
+        this.secondAccount = new BankAccount();
         this.keyboardInput = new Scanner(System.in);
 
         // Constructing hashmap, setting default bank account, and adding said bank
@@ -33,9 +34,10 @@ public class MainMenu {
         System.out.println("Welcome to the 237 Bank App!");
 
         System.out.println("1. Make a deposit");
-        System.out.println("2. Exit the app");
-
-        System.out.println("5. Create a new account");
+        System.out.println("2. Withdrawl money");
+        System.out.println("3. Make a transfer");
+        System.out.println("4. Create a new account");
+        System.out.println("5. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -53,8 +55,23 @@ public class MainMenu {
             case 1:
                 performDeposit();
                 break;
-            case 5:
+            
+            case 2:
+                performWithdrawal();
+                break;
+            
+            case 3:
+                performTransfer();
+                break;
+            
+            case 4:
                 performCreateAccount();
+            
+            case 5:
+                System.out.println("Goodbye");
+                break;
+
+            default:
                 break;
         }
     }
@@ -63,7 +80,7 @@ public class MainMenu {
         double depositAmount = -1;
         while (depositAmount < 0) {
             System.out.print("How much would you like to deposit: ");
-            depositAmount = keyboardInput.nextInt();
+            depositAmount = keyboardInput.nextDouble();
         }
         userAccount.deposit(depositAmount);
     }
@@ -91,6 +108,25 @@ public class MainMenu {
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
+    public void performTransfer() {
+        double transferAmount = -1;
+        while (transferAmount < 0) {
+            System.out.println("How much money would you like transfer: ");
+            transferAmount = keyboardInput.nextInt();
+
+        }
+        Transfer.transferService(userAccount, secondAccount, transferAmount);
+    }
+
+    public void performWithdrawal() {
+        double withdrawlAmount = -1;
+
+        while (withdrawlAmount < 0) {
+            System.out.println("How much would you like to withdrawl: ");
+            withdrawlAmount = keyboardInput.nextDouble();
+        }
+
+        Withdrawal.withdrawlMoney(userAccount, withdrawlAmount);
     }
 
     public void run() {
