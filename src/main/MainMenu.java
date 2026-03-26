@@ -4,13 +4,8 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-<<<<<<< HEAD
-    private static final int EXIT_SELECTION = 3;
-	private static final int MAX_SELECTION = 3;
-=======
     private static final int EXIT_SELECTION = 4;
 	private static final int MAX_SELECTION = 4;
->>>>>>> withdrawal
 
 	private BankAccount userAccount;
     private BankAccount secondAccount;
@@ -26,14 +21,9 @@ public class MainMenu {
         System.out.println("Welcome to the 237 Bank App!");
         
         System.out.println("1. Make a deposit");
-<<<<<<< HEAD
         System.out.println("2. Make a transfer");
-        System.out.println("3. Exit the app");
-=======
         System.out.println("3. Withdrawl money");
-        System.out.println("2. Exit the app");
->>>>>>> withdrawal
-
+        System.out.println("4. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -49,21 +39,21 @@ public class MainMenu {
         switch (selection) {
             case 1:
                 performDeposit();
-<<<<<<< HEAD
                 break;
 
             case 2:
                 performTransfer();
                 break;
-            
-            case 3:
-                System.out.println("Goodbye");
-                break;
-            default:
-=======
+
             case 3:
                 performWithdrawal();
->>>>>>> withdrawal
+                break;
+            
+            case 4:
+                System.out.println("Goodbye");
+                break;
+
+            default:
                 break;
         }
     }
@@ -77,16 +67,16 @@ public class MainMenu {
         userAccount.deposit(depositAmount);
     }
 
-<<<<<<< HEAD
     public void performTransfer() {
         double transferAmount = -1;
-        while(transferAmount < 0) {
+        while (transferAmount < 0) {
             System.out.println("How much money would you like transfer: ");
-            transferAmount= keyboardInput.nextInt();
+            transferAmount = keyboardInput.nextInt();
 
         }
         Transfer.transferService(userAccount, secondAccount, transferAmount);
-=======
+    }
+
     public void performWithdrawal() {
         double withdrawlAmount = -1;
 
@@ -96,7 +86,6 @@ public class MainMenu {
         }
 
         Withdrawal.withdrawlMoney(userAccount, withdrawlAmount);
->>>>>>> withdrawal
     }
 
     public void run() {
