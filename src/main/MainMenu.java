@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 5;
-    private static final int MAX_SELECTION = 5;
+    private static final int EXIT_SELECTION = 6;
+    private static final int MAX_SELECTION = 6;
 
     private BankAccount userAccount;
     private Scanner keyboardInput;
@@ -14,6 +14,7 @@ public class MainMenu {
     // Adding hashmap in order to keep track of multiple bank accounts
     private HashMap<String, BankAccount> accounts;
     private String currentAccountName;
+    private AccountDeletion accountDeletion;
     private AccountCreation accountCreation;
 
     public MainMenu() {
@@ -27,6 +28,7 @@ public class MainMenu {
         this.currentAccountName = "default";
         this.accounts.put(this.currentAccountName, this.userAccount);
 
+        this.accountDeletion = new AccountDeletion();
         this.accountCreation = new AccountCreation();
     }
 
@@ -34,10 +36,11 @@ public class MainMenu {
         System.out.println("Welcome to the 237 Bank App!");
 
         System.out.println("1. Make a deposit");
-        System.out.println("2. Withdrawl money");
+        System.out.println("2. Make a withdrawal");
         System.out.println("3. Make a transfer");
         System.out.println("4. Create a new account");
-        System.out.println("5. Exit the app");
+        System.out.println("5. Close an existing account");
+        System.out.println("6. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -55,7 +58,7 @@ public class MainMenu {
             case 1:
                 performDeposit();
                 break;
-            
+      
             case 2:
                 performWithdrawal();
                 break;
@@ -68,6 +71,9 @@ public class MainMenu {
                 performCreateAccount();
             
             case 5:
+                performCloseAccount(); 
+            
+            case 6:
                 System.out.println("Goodbye");
                 break;
 
@@ -85,6 +91,37 @@ public class MainMenu {
         userAccount.deposit(depositAmount);
     }
 
+    // Method to close an account
+    public void performCloseAccount() {
+        try {
+            System.out.println("Which account would you like to close?");
+            String accountName = keyboardInput.nextLine();
+
+            if (accountName.equals(currentAccountName)) {
+                System.out.println(
+                        "You are currently using this account and cannot close it before switching to a new one.");
+                System.out.print("Enter the name of the account you'd like to switch to: ");
+                String switchToAccount = keyboardInput.nextLine();
+
+                while (!accounts.containsKey(switchToAccount) || switchToAccount.equals(accountName)) {
+                    if (switchToAccount.equals(accountName)) {
+                        System.out.println(
+                                "You cannot switch to the account you are closing. Please enter a different account name.");
+                    } else {
+                        System.out.println("Account " + switchToAccount + " does not exist. Please try again.");
+                    }
+                    System.out.print("Enter the name of the account you'd like to switch to: ");
+                    switchToAccount = keyboardInput.nextLine();
+                }
+
+                this.userAccount = accounts.get(switchToAccount);
+                this.currentAccountName = switchToAccount;
+                System.out.println("You are now using the " + switchToAccount + " account.");
+            }
+
+            accountDeletion.deleteAccount(accountName, currentAccountName, accounts);
+            System.out.println("Account " + accountName + " has been closed.");
+          
     // Method to create a new account
     public void performCreateAccount() {
         try {
