@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import main.BankAccount;
-import main.Transfer;
 
 public class TransferTest {
 
@@ -23,14 +22,14 @@ public class TransferTest {
 
     @Test
     public void testTransferToAnotherAccount() {
-        Transfer.transferService(account1,account2, 20);
+        account1.transfer(account1,account2, 20);
         assertEquals(30, account1.getBalance(), 0.01);
     }
 
     @Test
     public void testTransferToNullAccount() {
         try {
-            Transfer.transferService(account1,null, 20);
+            account1.transfer(account1,null, 20);
         } catch (IllegalArgumentException e) {
 
         }
@@ -39,7 +38,7 @@ public class TransferTest {
     @Test
     public void testTransferWhenInsufficientFund() {
         try {
-            Transfer.transferService(account1, account2, 100);
+            account1.transfer(account1, account2, 100);
             fail();
         } catch (IllegalArgumentException e) {
 
@@ -49,7 +48,7 @@ public class TransferTest {
     @Test
     public void testTransferToSameAcccount() {
         try {
-            Transfer.transferService(account1, account1, 20);
+            account1.transfer(account1, account1, 20);
         } catch (IllegalArgumentException e) {
             
         }
