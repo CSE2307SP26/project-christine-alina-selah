@@ -9,6 +9,7 @@ public class MainMenu {
     private static final int MAX_SELECTION = 6;
 
     private BankAccount userAccount;
+    private BankAccount secondAccount;
     private Scanner keyboardInput;
 
     // Adding hashmap in order to keep track of multiple bank accounts

@@ -20,12 +20,16 @@ public class BankAccount {
         return this.balance;
     }
 
-    public void increaseBalance(double amount) {
-        this.balance += amount;
-    }
+    public void withdrawal(BankAccount account, double amount) {
+        if(amount <=0) {
+            throw new IllegalArgumentException("Amount must be greater than 0.");
+        }
 
-    public void decreaseBalance(double amount) {
-        this.balance -= amount;
+        if(account.getBalance() < amount) {
+            throw new IllegalArgumentException("Not enough balance.");
+        }
+
+        account.balance -= amount;
     }
 
 }
