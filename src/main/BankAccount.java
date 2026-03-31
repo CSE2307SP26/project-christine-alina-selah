@@ -19,13 +19,13 @@ public class BankAccount {
     public double getBalance() {
         return this.balance;
     }
+// Shook said be axed
+    // public void increaseBalance(double amount) {
+    //     this.balance += amount;
+    // }
 
-    public void increaseBalance(double amount) {
-        this.balance += amount;
-    }
-
-    public void decreaseBalance(double amount) {
-        this.balance -= amount;
-    }
+    // public void decreaseBalance(double amount) {
+    //     this.balance -= amount;
+    // }
 
 }
