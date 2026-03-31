@@ -153,7 +153,7 @@ public class MainMenu {
             transferAmount = keyboardInput.nextInt();
 
         }
-        Transfer.transferService(userAccount, secondAccount, transferAmount);
+        userAccount.transfer(userAccount, secondAccount, transferAmount);
     }
 
     public void performWithdrawal() {
@@ -164,7 +164,7 @@ public class MainMenu {
             withdrawlAmount = keyboardInput.nextDouble();
         }
 
-        Withdrawal.withdrawlMoney(userAccount, withdrawlAmount);
+        userAccount.withdrawal(userAccount,withdrawlAmount);
     }
 
     public void run() {
