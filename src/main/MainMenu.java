@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 6;
-    private static final int MAX_SELECTION = 6;
+    private static final int EXIT_SELECTION = 7;
+    private static final int MAX_SELECTION = 7;
 
     private BankAccount userAccount;
     private BankAccount secondAccount;
@@ -17,8 +17,8 @@ public class MainMenu {
     private String currentAccountName;
 
     public MainMenu() {
-        this.userAccount = new BankAccount();
-        this.secondAccount = new BankAccount();
+        this.userAccount = new BankAccount("default", "1234");
+        this.secondAccount = new BankAccount("second", "1234");
         this.keyboardInput = new Scanner(System.in);
 
         // Constructing hashmap, setting default bank account, and adding said bank
@@ -26,18 +26,20 @@ public class MainMenu {
         this.accounts = new HashMap<>();
         this.currentAccountName = "default";
         this.accounts.put(this.currentAccountName, this.userAccount);
+        this.accounts.put("second", this.secondAccount);
 
     }
 
     public void displayOptions() {
         System.out.println("Welcome to the 237 Bank App!");
 
-        System.out.println("1. Make a deposit");
-        System.out.println("2. Make a withdrawal");
-        System.out.println("3. Make a transfer");
-        System.out.println("4. Create a new account");
-        System.out.println("5. Close an existing account");
-        System.out.println("6. Exit the app");
+        System.out.println("1. Login");
+        System.out.println("2. Make a deposit");
+        System.out.println("3. Make a withdrawal");
+        System.out.println("4. Make a transfer");
+        System.out.println("5. Create a new account");
+        System.out.println("6. Close an existing account");
+        System.out.println("7. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -81,6 +83,30 @@ public class MainMenu {
         }
     }
 
+    public void performLogin() {
+        System.out.println("Enter account name:");
+        String accountName = keyboardInput.nextLine().trim();
+
+        if (!accounts.containsKey(accountName)) {
+            System.out.println("Account does not exist.");
+            return;
+        }
+
+        System.out.println("Enter Password:");
+        String password = keyboardInput.nextLine();
+
+        BankAccount account = accounts.get(accountName);
+
+        if(account.checkPassword(password)) {
+            userAccount = account;
+            currentAccountName = accountName;
+            System.out.println("Login successful. Your are using " + accountName);
+
+        } else {
+            System.out.println("incorrect password");
+        }
+    }
+
     // Method to create a new account
     public void performCreateAccount() {
         try {
@@ -99,7 +125,7 @@ public class MainMenu {
         }
     }
 
-    public void createAccount(String accountName, double initialBalance) {
+    public void createAccount(String accountName, String password, double initialBalance) {
         if (accountName.isEmpty()) {
             throw new IllegalArgumentException("Account name cannot be empty.");
         }
@@ -110,7 +136,7 @@ public class MainMenu {
             throw new IllegalArgumentException("Initial balance cannot be negative.");
         }
 
-        BankAccount newAccount = new BankAccount();
+        BankAccount newAccount = new BankAccount(accountName, password);
         newAccount.deposit(initialBalance);
         accounts.put(accountName, newAccount);
         userAccount = newAccount;
