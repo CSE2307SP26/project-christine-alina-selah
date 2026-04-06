@@ -3,9 +3,20 @@ package main;
 public class BankAccount {
 
     private double balance;
+    private String accountName;
+    private String password;
 
-    public BankAccount() {
+
+    public BankAccount(String accountName, String password) {
+        if (accountName == null || accountName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Account name cannot be empty") ;
+        }
+        if (password == null || password.trim().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be empty");
+        }
         this.balance = 0;
+        this.accountName = accountName;
+        this.password = password;
     }
 
     public void deposit(double amount) {
@@ -18,6 +29,14 @@ public class BankAccount {
 
     public double getBalance() {
         return this.balance;
+    }
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public boolean checkPassword(String userInputPassword) {
+        return password.equals(userInputPassword);
     }
 
     public void withdrawal(BankAccount account, double amount) {

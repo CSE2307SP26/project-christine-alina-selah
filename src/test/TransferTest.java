@@ -15,8 +15,8 @@ public class TransferTest {
 
     @BeforeEach
     public void setup() {
-        account1 = new BankAccount();
-        account2 = new BankAccount();
+        account1 = new BankAccount("account1", "1234");
+        account2 = new BankAccount("account2", "1234");
         account1.deposit(50);
     }
 
