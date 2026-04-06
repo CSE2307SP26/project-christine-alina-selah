@@ -15,8 +15,6 @@ public class MainMenu {
     // Adding hashmap in order to keep track of multiple bank accounts
     private HashMap<String, BankAccount> accounts;
     private String currentAccountName;
-    private AccountDeletion accountDeletion;
-    private AccountCreation accountCreation;
 
     public MainMenu() {
         this.userAccount = new BankAccount();
@@ -29,8 +27,6 @@ public class MainMenu {
         this.currentAccountName = "default";
         this.accounts.put(this.currentAccountName, this.userAccount);
 
-        this.accountDeletion = new AccountDeletion();
-        this.accountCreation = new AccountCreation();
     }
 
     public void displayOptions() {
@@ -59,27 +55,119 @@ public class MainMenu {
             case 1:
                 performDeposit();
                 break;
-      
+
             case 2:
                 performWithdrawal();
                 break;
-            
+
             case 3:
                 performTransfer();
                 break;
-            
+
             case 4:
                 performCreateAccount();
-            
+                break;
+
             case 5:
-                performCloseAccount(); 
-            
+                performCloseAccount();
+                break;
+
             case 6:
                 System.out.println("Goodbye");
                 break;
 
             default:
                 break;
+        }
+    }
+
+    // Method to create a new account
+    public void performCreateAccount() {
+        try {
+            System.out.println("What would you like to name your new account?");
+            String accountName = keyboardInput.nextLine().trim();
+
+            System.out.print("How much would you like to deposit: ");
+            double initialBalance = keyboardInput.nextDouble();
+            keyboardInput.nextLine();
+
+            createAccount(accountName, initialBalance);
+            System.out.println("You are now using the " + accountName
+                    + " account with a balance of $" + userAccount.getBalance());
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void createAccount(String accountName, double initialBalance) {
+        if (accountName.isEmpty()) {
+            throw new IllegalArgumentException("Account name cannot be empty.");
+        }
+        if (accounts.containsKey(accountName)) {
+            throw new IllegalArgumentException("Account name already exists.");
+        }
+        if (initialBalance < 0) {
+            throw new IllegalArgumentException("Initial balance cannot be negative.");
+        }
+
+        BankAccount newAccount = new BankAccount();
+        newAccount.deposit(initialBalance);
+        accounts.put(accountName, newAccount);
+        userAccount = newAccount;
+        currentAccountName = accountName;
+    }
+
+    // Method to close an account
+    public void performCloseAccount() {
+        try {
+            System.out.println("Which account would you like to close?");
+            String accountName = keyboardInput.nextLine().trim();
+
+            if (accountName.isEmpty()) {
+                throw new IllegalArgumentException("Account name cannot be empty.");
+            }
+            if (accountName.equals(currentAccountName)) {
+                String switchToAccount = promptForSwitchAccount(accountName);
+                userAccount = accounts.get(switchToAccount);
+                currentAccountName = switchToAccount;
+                System.out.println("You are now using the " + switchToAccount + " account.");
+            }
+
+            closeAccount(accountName);
+            System.out.println("Account " + accountName + " has been closed.");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void closeAccount(String accountName) {
+        if (!accounts.containsKey(accountName)) {
+            throw new IllegalArgumentException("Account " + accountName + " does not exist.");
+        }
+        if (accounts.size() == 1) {
+            throw new IllegalArgumentException(
+                    "You cannot close your last account. Please create a new one before trying again.");
+        }
+
+        accounts.remove(accountName);
+    }
+
+    public String promptForSwitchAccount(String accountName) {
+        System.out.println("You are currently using this account and cannot close it before switching to a new one.");
+
+        while (true) {
+            System.out.print("Enter the name of the account you'd like to switch to: ");
+            String switchToAccount = keyboardInput.nextLine().trim();
+
+            if (switchToAccount.isEmpty()) {
+                System.out.println("Account name cannot be empty.");
+            } else if (switchToAccount.equals(accountName)) {
+                System.out.println("You cannot switch to the account you are closing.");
+            } else if (!accounts.containsKey(switchToAccount)) {
+                System.out.println("Account " + switchToAccount + " does not exist.");
+            } else {
+                return switchToAccount;
+            }
         }
     }
 
@@ -92,60 +180,6 @@ public class MainMenu {
         userAccount.deposit(depositAmount);
     }
 
-    // Method to close an account
-    public void performCloseAccount() {
-        try {
-            System.out.println("Which account would you like to close?");
-            String accountName = keyboardInput.nextLine();
-
-            if (accountName.equals(currentAccountName)) {
-                System.out.println(
-                        "You are currently using this account and cannot close it before switching to a new one.");
-                System.out.print("Enter the name of the account you'd like to switch to: ");
-                String switchToAccount = keyboardInput.nextLine();
-
-                while (!accounts.containsKey(switchToAccount) || switchToAccount.equals(accountName)) {
-                    if (switchToAccount.equals(accountName)) {
-                        System.out.println(
-                                "You cannot switch to the account you are closing. Please enter a different account name.");
-                    } else {
-                        System.out.println("Account " + switchToAccount + " does not exist. Please try again.");
-                    }
-                    System.out.print("Enter the name of the account you'd like to switch to: ");
-                    switchToAccount = keyboardInput.nextLine();
-                }
-
-                this.userAccount = accounts.get(switchToAccount);
-                this.currentAccountName = switchToAccount;
-                System.out.println("You are now using the " + switchToAccount + " account.");
-            }
-
-            accountDeletion.deleteAccount(accountName, currentAccountName, accounts);
-            System.out.println("Account " + accountName + " has been closed.");
-          
-    // Method to create a new account
-    public void performCreateAccount() {
-        try {
-            // Prompting user for account name
-            System.out.println("What would you like to name your new account?");
-            String accountName = keyboardInput.nextLine();
-
-            // Prompting user for initial account balance
-            System.out.print("How much would you like to deposit: ");
-            double initialBalance = keyboardInput.nextDouble();
-            keyboardInput.nextLine();
-
-            BankAccount newAccount = accountCreation.createAccount(accountName, initialBalance, accounts);
-
-            this.userAccount = newAccount;
-            this.currentAccountName = accountName;
-
-            System.out.println(
-                    "You are now using the " + accountName + " account with a balance of $" + newAccount.getBalance());
-
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
     public void performTransfer() {
         double transferAmount = -1;
         while (transferAmount < 0) {
@@ -174,6 +208,14 @@ public class MainMenu {
             selection = getUserSelection(MAX_SELECTION);
             processInput(selection);
         }
+    }
+
+    public HashMap<String, BankAccount> getAccounts() {
+        return accounts;
+    }
+
+    public String getCurrentAccountName() {
+        return currentAccountName;
     }
 
     public static void main(String[] args) {
