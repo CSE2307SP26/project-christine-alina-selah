@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import main.BankAccount;
-import main.Withdrawal;
 
 public class WithdrawalTest {
     
@@ -18,10 +17,10 @@ public class WithdrawalTest {
         account = new BankAccount();
     }
 
-       @Test
+    @Test
     public void testWithdrawalValidAmount() {
         account.deposit(50);
-        Withdrawal.withdrawlMoney(account, 25);
+        account.withdrawal(account, 25);
         assertEquals(25, account.getBalance(), 0.01);
     }
 
@@ -30,7 +29,7 @@ public class WithdrawalTest {
        
         account.deposit(15);
         try {
-            Withdrawal.withdrawlMoney(account, 25);
+            account.withdrawal(account, 25);
             fail();
         } catch (IllegalArgumentException e) {
 
@@ -40,7 +39,7 @@ public class WithdrawalTest {
     @Test
     public void testWithdrawalInvalidAmount() {
         try {
-            Withdrawal.withdrawlMoney(account, -10);
+            account.withdrawal(account, -10);
             fail();
         }catch(IllegalArgumentException e) {
             
