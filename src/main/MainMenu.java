@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 9;
-    private static final int MAX_SELECTION = 9;
+    private static final int EXIT_SELECTION = 10;
+    private static final int MAX_SELECTION = 10;
 
     private BankAccount userAccount;
     private BankAccount secondAccount;
@@ -41,9 +41,10 @@ public class MainMenu {
         System.out.println("4. Make a transfer");
         System.out.println("5. Create a new account");
         System.out.println("6. Close an existing account");
-        System.out.println("7. Apply intrest (savings account only)");
+        System.out.println("7. Apply interest (savings account only)");
         System.out.println("8. View transaction history");
-        System.out.println("9. Exit the app");
+        System.out.println("9. Check account balance"); // <-- ADD THIS
+        System.out.println("10. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -83,8 +84,10 @@ public class MainMenu {
             case 7:
                 performApplyIntrest();
                 break;
-
             case 8:
+                performCheckBalance();
+                break;
+            case 9:
                 System.out.println("Goodbye");
                 break;
 
@@ -114,7 +117,7 @@ public class MainMenu {
 
         BankAccount account = accounts.get(accountName);
 
-        if(account.checkPassword(password)) {
+        if (account.checkPassword(password)) {
             userAccount = account;
             currentAccountName = accountName;
             System.out.println("Login successful. Your are using " + accountName);
@@ -128,7 +131,7 @@ public class MainMenu {
         try {
             userAccount.applyIntrest();
             System.out.println("Intrest applied, New balance: $" + userAccount.getBalance());
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -159,13 +162,13 @@ public class MainMenu {
 
     public void createAccount(String accountName, String password, String accountType, double initialBalance) {
         // if (accountName.isEmpty()) {
-        //     throw new IllegalArgumentException("Account name cannot be empty.");
+        // throw new IllegalArgumentException("Account name cannot be empty.");
         // }
         // if (accounts.containsKey(accountName)) {
-        //     throw new IllegalArgumentException("Account name already exists.");
+        // throw new IllegalArgumentException("Account name already exists.");
         // }
         // if (initialBalance < 0) {
-        //     throw new IllegalArgumentException("Initial balance cannot be negative.");
+        // throw new IllegalArgumentException("Initial balance cannot be negative.");
         // }
 
         BankAccount newAccount = new BankAccount(accountName, password, accountType, initialBalance);
@@ -257,7 +260,13 @@ public class MainMenu {
             withdrawlAmount = keyboardInput.nextDouble();
         }
 
-        userAccount.withdrawal(userAccount,withdrawlAmount);
+        userAccount.withdrawal(userAccount, withdrawlAmount);
+    }
+
+    public void performCheckBalance() {
+        CheckBankAccount checker = new CheckBankAccount(userAccount.getBalance());
+        double balance = checker.checkBalance();
+        System.out.println("Your current balance is: $" + balance);
     }
 
     public void run() {
