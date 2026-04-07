@@ -37,7 +37,7 @@ public class MainMenu {
     public void processInput(int selection) {
         switch (selection) {
             case 1:
-                history.displayTransactionHistory();
+                displayHistory();
                 break;
             case 2:
                 performDeposit();
