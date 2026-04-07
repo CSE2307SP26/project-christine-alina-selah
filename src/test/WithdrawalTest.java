@@ -1,0 +1,50 @@
+package test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import main.BankAccount;
+
+public class WithdrawalTest {
+    
+    private BankAccount account;
+
+    @BeforeEach
+    public void setup() {
+        account = new BankAccount("testuser", "1234", "checking", 0);
+    }
+
+    @Test
+    public void testWithdrawalValidAmount() {
+        account.deposit(50);
+        account.withdrawal(account, 25);
+        assertEquals(25, account.getBalance(), 0.01);
+    }
+
+    @Test
+    public void testWithdrawalWithInsufficientFund() {
+       
+        account.deposit(15);
+        try {
+            account.withdrawal(account, 25);
+            fail();
+        } catch (IllegalArgumentException e) {
+
+        }
+    } 
+
+    @Test
+    public void testWithdrawalInvalidAmount() {
+        try {
+            account.withdrawal(account, -10);
+            fail();
+        }catch(IllegalArgumentException e) {
+            
+        }
+
+    }
+    
+}
