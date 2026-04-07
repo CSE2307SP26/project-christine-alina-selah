@@ -14,7 +14,7 @@ public class WithdrawalTest {
 
     @BeforeEach
     public void setup() {
-        account = new BankAccount("testuser", "1234");
+        account = new BankAccount("testuser", "1234", "checking", 0);
     }
 
     @Test
