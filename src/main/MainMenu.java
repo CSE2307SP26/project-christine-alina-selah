@@ -5,20 +5,21 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 8;
-    private static final int MAX_SELECTION = 8;
+    private static final int EXIT_SELECTION = 9;
+    private static final int MAX_SELECTION = 9;
 
     private BankAccount userAccount;
     private BankAccount secondAccount;
     private Scanner keyboardInput;
+    private ViewTransactionHistory history;
 
     // Adding hashmap in order to keep track of multiple bank accounts
     private HashMap<String, BankAccount> accounts;
     private String currentAccountName;
 
     public MainMenu() {
-        this.userAccount = new BankAccount("default", "1234", "checking");
-        this.secondAccount = new BankAccount("second", "1234", "checking");
+        this.userAccount = new BankAccount("default", "1234", "checking", 0);
+        this.secondAccount = new BankAccount("second", "1234", "checking", 0);
         this.keyboardInput = new Scanner(System.in);
 
         // Constructing hashmap, setting default bank account, and adding said bank
@@ -27,6 +28,7 @@ public class MainMenu {
         this.currentAccountName = "default";
         this.accounts.put(this.currentAccountName, this.userAccount);
         this.accounts.put("second", this.secondAccount);
+        this.history = new ViewTransactionHistory();
 
     }
 
@@ -40,7 +42,8 @@ public class MainMenu {
         System.out.println("5. Create a new account");
         System.out.println("6. Close an existing account");
         System.out.println("7. Apply intrest (savings account only)");
-        System.out.println("8. Exit the app");
+        System.out.println("8. View transaction history");
+        System.out.println("9. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -87,6 +90,13 @@ public class MainMenu {
 
             default:
                 break;
+        }
+    }
+
+    public void displayHistory() {
+        System.out.println("Transaction History:");
+        for (String entry : history.viewHistory()) {
+            System.out.println(entry);
         }
     }
 
@@ -226,6 +236,7 @@ public class MainMenu {
             depositAmount = keyboardInput.nextDouble();
         }
         userAccount.deposit(depositAmount);
+        history.record("Deposited $" + depositAmount);
     }
 
     public void performTransfer() {
