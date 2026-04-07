@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 7;
-    private static final int MAX_SELECTION = 7;
+    private static final int EXIT_SELECTION = 8;
+    private static final int MAX_SELECTION = 8;
 
     private BankAccount userAccount;
     private BankAccount secondAccount;
@@ -17,8 +17,8 @@ public class MainMenu {
     private String currentAccountName;
 
     public MainMenu() {
-        this.userAccount = new BankAccount("default", "1234");
-        this.secondAccount = new BankAccount("second", "1234");
+        this.userAccount = new BankAccount("default", "1234", "checking");
+        this.secondAccount = new BankAccount("second", "1234", "checking");
         this.keyboardInput = new Scanner(System.in);
 
         // Constructing hashmap, setting default bank account, and adding said bank
@@ -39,7 +39,8 @@ public class MainMenu {
         System.out.println("4. Make a transfer");
         System.out.println("5. Create a new account");
         System.out.println("6. Close an existing account");
-        System.out.println("7. Exit the app");
+        System.out.println("7. Apply intrest (savings account only)");
+        System.out.println("8. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -55,26 +56,32 @@ public class MainMenu {
     public void processInput(int selection) {
         switch (selection) {
             case 1:
+                performLogin();
+                break;
+            case 2:
                 performDeposit();
                 break;
 
-            case 2:
+            case 3:
                 performWithdrawal();
                 break;
 
-            case 3:
+            case 4:
                 performTransfer();
                 break;
 
-            case 4:
+            case 5:
                 performCreateAccount();
                 break;
 
-            case 5:
+            case 6:
                 performCloseAccount();
                 break;
+            case 7:
+                performApplyIntrest();
+                break;
 
-            case 6:
+            case 8:
                 System.out.println("Goodbye");
                 break;
 
@@ -107,17 +114,32 @@ public class MainMenu {
         }
     }
 
+    public void performApplyIntrest() {
+        try {
+            userAccount.applyIntrest();
+            System.out.println("Intrest applied, New balance: $" + userAccount.getBalance());
+        } catch(IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     // Method to create a new account
     public void performCreateAccount() {
         try {
             System.out.println("What would you like to name your new account?");
             String accountName = keyboardInput.nextLine().trim();
 
+            System.out.println("What would the password to the account be?");
+            String password = keyboardInput.nextLine().trim();
+
+            System.out.println("What type of account would it be? (savings/checking)");
+            String accountType = keyboardInput.nextLine().trim();
+
             System.out.print("How much would you like to deposit: ");
             double initialBalance = keyboardInput.nextDouble();
             keyboardInput.nextLine();
 
-            createAccount(accountName, initialBalance);
+            createAccount(accountName, password, accountType, initialBalance);
             System.out.println("You are now using the " + accountName
                     + " account with a balance of $" + userAccount.getBalance());
         } catch (IllegalArgumentException e) {
@@ -125,18 +147,18 @@ public class MainMenu {
         }
     }
 
-    public void createAccount(String accountName, String password, double initialBalance) {
-        if (accountName.isEmpty()) {
-            throw new IllegalArgumentException("Account name cannot be empty.");
-        }
-        if (accounts.containsKey(accountName)) {
-            throw new IllegalArgumentException("Account name already exists.");
-        }
-        if (initialBalance < 0) {
-            throw new IllegalArgumentException("Initial balance cannot be negative.");
-        }
+    public void createAccount(String accountName, String password, String accountType, double initialBalance) {
+        // if (accountName.isEmpty()) {
+        //     throw new IllegalArgumentException("Account name cannot be empty.");
+        // }
+        // if (accounts.containsKey(accountName)) {
+        //     throw new IllegalArgumentException("Account name already exists.");
+        // }
+        // if (initialBalance < 0) {
+        //     throw new IllegalArgumentException("Initial balance cannot be negative.");
+        // }
 
-        BankAccount newAccount = new BankAccount(accountName, password);
+        BankAccount newAccount = new BankAccount(accountName, password, accountType, initialBalance);
         newAccount.deposit(initialBalance);
         accounts.put(accountName, newAccount);
         userAccount = newAccount;

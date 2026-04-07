@@ -11,20 +11,20 @@ public class LoginTest {
 
     @Test
     public void testCorrectPassword() {
-        BankAccount account = new BankAccount("Bob", "1234");
+        BankAccount account = new BankAccount("Bob", "1234", "checking", 0);
         assertTrue(account.checkPassword("1234"));
     }
 
     @Test
     public void testWrongPassword() {
-        BankAccount account = new BankAccount("Bob", "1234");
+        BankAccount account = new BankAccount("Bob", "1234", "checking", 0);
         assertFalse(account.checkPassword("2342"));
     }
 
     @Test
     public void testEmptyAccountName() {
         try {
-            new BankAccount(" ", "1234");
+            new BankAccount(" ", "1234", "checking", 100);
             fail();
         } catch (IllegalArgumentException e) {
 
@@ -34,7 +34,7 @@ public class LoginTest {
     @Test
     public void testEmptyPassword() {
         try {
-            new BankAccount("bob", "");
+            new BankAccount("bob", "", "checking", 100);
             fail();
         } catch (IllegalArgumentException e) {
 
