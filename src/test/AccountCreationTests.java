@@ -28,7 +28,7 @@ public class AccountCreationTests {
     public void testCreateAccountSuccess() {
         MainMenu menu = new MainMenu();
 
-        menu.createAccount("TestUser", 100.0);
+        menu.createAccount("TestUser", "1234", "checking", 100);
 
         assertTrue(menu.getAccounts().containsKey("TestUser"));
         BankAccount account = menu.getAccounts().get("TestUser");
@@ -42,7 +42,7 @@ public class AccountCreationTests {
         MainMenu menu = new MainMenu();
 
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> {
-            menu.createAccount("", 100.0);
+            menu.createAccount("", "1234", "checking", 100.0);
         });
 
         assertEquals("Account name cannot be empty.", e.getMessage());
@@ -51,10 +51,10 @@ public class AccountCreationTests {
     @Test
     public void testCreateAccountDuplicateThrowsException() {
         MainMenu menu = new MainMenu();
-        menu.createAccount("TestUser", 100.0);
+        menu.createAccount("TestUser", "1234", "checking", 100.0);
 
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> {
-            menu.createAccount("TestUser", 50.0);
+            menu.createAccount("TestUser", "1234", "checking", 100.0);
         });
 
         assertEquals("Account name already exists.", e.getMessage());
@@ -65,7 +65,7 @@ public class AccountCreationTests {
         MainMenu menu = new MainMenu();
 
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> {
-            menu.createAccount("TestUser", -10.0);
+            menu.createAccount("TestUser", "1234", "checking", -10.0);
         });
 
         assertEquals("Initial balance cannot be negative.", e.getMessage());
@@ -73,7 +73,7 @@ public class AccountCreationTests {
 
     @Test
     public void testPerformCreateAccountSuccess() {
-        String input = "Checking\n150.0\n";
+        String input = "Checking\n1234\nchecking\n150.0\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -94,11 +94,11 @@ public class AccountCreationTests {
 
     @Test
     public void testPerformCreateAccountDuplicatePrintsError() {
-        String input = "Checking\n75.0\n";
+        String input = "Checking\n1234\nchecking\n75.0\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
 
         MainMenu menu = new MainMenu();
-        menu.createAccount("Checking", 100.0);
+        menu.createAccount("Checking", "1234", "checking", 100.0);
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
