@@ -5,13 +5,13 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 10;
-    private static final int MAX_SELECTION = 10;
+    private static final int EXIT_SELECTION = 11;
+    private static final int MAX_SELECTION = 11;
 
     private BankAccount userAccount;
     private BankAccount secondAccount;
     private Scanner keyboardInput;
-    private ViewTransactionHistory history;
+    // private ViewTransactionHistory history;
 
     // Adding hashmap in order to keep track of multiple bank accounts
     private HashMap<String, BankAccount> accounts;
@@ -28,7 +28,7 @@ public class MainMenu {
         this.currentAccountName = "default";
         this.accounts.put(this.currentAccountName, this.userAccount);
         this.accounts.put("second", this.secondAccount);
-        this.history = new ViewTransactionHistory();
+        // this.history = new ViewTransactionHistory();
 
     }
 
@@ -44,7 +44,8 @@ public class MainMenu {
         System.out.println("7. Apply interest (savings account only)");
         System.out.println("8. View transaction history");
         System.out.println("9. Check account balance"); // <-- ADD THIS
-        System.out.println("10. Exit the app");
+        System.out.println("10. Send money with Zelle");
+        System.out.println("11. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -87,13 +88,40 @@ public class MainMenu {
             case 8:
                 performCheckBalance();
                 break;
-            case 9:
+            case 10:
+                performZelleTransfer();
+                break;
+            case 11:
                 System.out.println("Goodbye");
                 break;
 
             default:
                 break;
         }
+    }
+
+    public void performZelleTransfer() {
+        try {
+            System.out.println("Enter the email address of the person you want to send money to:");
+            String email = keyboardInput.nextLine().trim();
+
+            System.out.println("Enter the amount of money you want to send:");
+            double amount = keyboardInput.nextDouble();
+            keyboardInput.nextLine();
+
+            sendZelle(email, amount);
+            System.out.println("Money sent to " + email);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void sendZelle(String email, double amount) {
+        if (email.isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be empty.");
+        }
+
+        userAccount.withdraw(amount);
     }
 
     public void displayHistory() {
@@ -136,7 +164,6 @@ public class MainMenu {
         }
     }
 
-    // Method to create a new account
     public void performCreateAccount() {
         try {
             System.out.println("What would you like to name your new account?");
@@ -178,7 +205,6 @@ public class MainMenu {
         currentAccountName = accountName;
     }
 
-    // Method to close an account
     public void performCloseAccount() {
         try {
             System.out.println("Which account would you like to close?");
