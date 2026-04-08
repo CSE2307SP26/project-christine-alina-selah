@@ -7,7 +7,6 @@ public class BankAccount {
     private String password;
     private String accountType;
 
-
     public BankAccount(String accountName, String password, String accountType, double initialBalance) {
         if (initialBalance < 0) {
             throw new IllegalArgumentException("Initial balance cannot be 0");
@@ -56,11 +55,11 @@ public class BankAccount {
     }
 
     public void withdrawal(BankAccount account, double amount) {
-        if(amount <=0) {
+        if (amount <= 0) {
             throw new IllegalArgumentException("Amount must be greater than 0.");
         }
 
-        if(account.getBalance() < amount) {
+        if (account.getBalance() < amount) {
             throw new IllegalArgumentException("Not enough balance.");
         }
 
@@ -87,7 +86,7 @@ public class BankAccount {
     }
 
     public void applyIntrest() {
-        if(accountType.equalsIgnoreCase("savings")){
+        if (accountType.equalsIgnoreCase("savings")) {
             balance += balance * 0.05;
         } else {
             throw new IllegalArgumentException("Intrest can only be apply to savings account");
