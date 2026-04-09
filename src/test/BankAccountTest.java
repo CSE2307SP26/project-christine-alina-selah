@@ -11,14 +11,14 @@ public class BankAccountTest {
 
     @Test
     public void testDeposit() {
-        BankAccount testAccount = new BankAccount("testUser", "1234", "checking");
+        BankAccount testAccount = new BankAccount("testUser", "1234", "checking", 0);
         testAccount.deposit(50);
         assertEquals(50, testAccount.getBalance(), 0.01);
     }
 
     @Test
     public void testInvalidDeposit() {
-        BankAccount testAccount = new BankAccount("testUser", "1234", "checking");
+        BankAccount testAccount = new BankAccount("testUser", "1234", "checking", 0);
         try {
             testAccount.deposit(-50);
             fail();
