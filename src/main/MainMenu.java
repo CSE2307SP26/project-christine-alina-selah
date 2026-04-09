@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 11;
-    private static final int MAX_SELECTION = 11;
+    private static final int EXIT_SELECTION = 12;
+    private static final int MAX_SELECTION = 12;
 
     private BankAccount userAccount;
     private BankAccount secondAccount;
@@ -44,7 +44,8 @@ public class MainMenu {
         System.out.println("8. View transaction history");
         System.out.println("9. Check account balance"); // <-- ADD THIS
         System.out.println("10. Send money with Zelle");
-        System.out.println("11. Exit the app");
+        System.out.println("11. Create a joint account");
+        System.out.println("12. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -91,12 +92,62 @@ public class MainMenu {
                 performZelleTransfer();
                 break;
             case 11:
+                performCreateJointAccount();
+                break;
+            case 12:
                 System.out.println("Goodbye");
                 break;
 
             default:
                 break;
         }
+    }
+
+    public void performCreateJointAccount() {
+        try {
+            System.out.println("What would you like to name the joint account?");
+            String accountName = keyboardInput.nextLine().trim();
+
+            System.out.println("Enter the second owner's email address:");
+            String secondOwnerEmail = keyboardInput.nextLine().trim();
+
+            System.out.println("What would the password to the account be?");
+            String password = keyboardInput.nextLine().trim();
+
+            System.out.println("What type of account would it be? (savings/checking)");
+            String accountType = keyboardInput.nextLine().trim();
+
+            System.out.print("How much would you like to deposit: ");
+            double initialBalance = keyboardInput.nextDouble();
+            keyboardInput.nextLine();
+
+            createJointAccount(accountName, secondOwnerEmail, password, accountType, initialBalance);
+            System.out.println("You are now using the joint account " + accountName
+                    + " with a balance of $" + userAccount.getBalance());
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void createJointAccount(String accountName, String secondOwnerEmail,
+            String password, String accountType, double initialBalance) {
+
+        if (accountName.isEmpty() || secondOwnerEmail.isEmpty()) {
+            throw new IllegalArgumentException("Account names cannot be empty.");
+        }
+        if (accounts.containsKey(accountName)) {
+            throw new IllegalArgumentException("Account name already exists.");
+        }
+        if (initialBalance < 0) {
+            throw new IllegalArgumentException("Initial balance cannot be negative.");
+        }
+
+        BankAccount newAccount = new BankAccount(
+                accountName, secondOwnerEmail, password, accountType, initialBalance);
+
+        accounts.put(accountName, newAccount);
+        userAccount = newAccount;
+        currentAccountName = accountName;
     }
 
     public void performZelleTransfer() {
@@ -188,13 +239,13 @@ public class MainMenu {
 
     public void createAccount(String accountName, String password, String accountType, double initialBalance) {
         if (accountName.isEmpty()) {
-        throw new IllegalArgumentException("Account name cannot be empty.");
+            throw new IllegalArgumentException("Account name cannot be empty.");
         }
         if (accounts.containsKey(accountName)) {
-        throw new IllegalArgumentException("Account name already exists.");
+            throw new IllegalArgumentException("Account name already exists.");
         }
         if (initialBalance < 0) {
-        throw new IllegalArgumentException("Initial balance cannot be negative.");
+            throw new IllegalArgumentException("Initial balance cannot be negative.");
         }
 
         BankAccount newAccount = new BankAccount(accountName, password, accountType, initialBalance);
@@ -279,7 +330,7 @@ public class MainMenu {
 
         String destinationName = keyboardInput.nextLine().trim();
 
-        if(!accounts.containsKey(destinationName)) {
+        if (!accounts.containsKey(destinationName)) {
             System.out.println("Destination account does not exists");
             return;
         }
@@ -337,5 +388,6 @@ public class MainMenu {
     public static void main(String[] args) {
         MainMenu bankApp = new MainMenu();
         bankApp.run();
- 
 
+    }
+}
