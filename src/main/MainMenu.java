@@ -5,14 +5,14 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 12;
-    private static final int MAX_SELECTION = 12;
+    private static final int EXIT_SELECTION = 13;
+    private static final int MAX_SELECTION = 13;
 
     private BankAccount userAccount;
     private BankAccount secondAccount;
     private Scanner keyboardInput;
-    // private ViewTransactionHistory history;
-
+    private ViewTransactionHistory history;
+    private SearchTransactionHistory searcher;
     // Adding hashmap in order to keep track of multiple bank accounts
     private HashMap<String, BankAccount> accounts;
     private String currentAccountName;
@@ -45,7 +45,8 @@ public class MainMenu {
         System.out.println("9. Check account balance"); // <-- ADD THIS
         System.out.println("10. Send money with Zelle");
         System.out.println("11. Create a joint account");
-        System.out.println("12. Exit the app");
+        System.out.println("12. Search transaction history");
+        System.out.println("13. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -86,6 +87,9 @@ public class MainMenu {
                 performApplyIntrest();
                 break;
             case 8:
+                displayHistory();
+                break;
+            case 9:
                 performCheckBalance();
                 break;
             case 10:
@@ -94,7 +98,10 @@ public class MainMenu {
             case 11:
                 performCreateJointAccount();
                 break;
-            case 12:
+          case 12:
+                performSearchTransactions();
+                break;
+            case 13:
                 System.out.println("Goodbye");
                 break;
 
@@ -368,6 +375,22 @@ public class MainMenu {
         System.out.println("Your current balance is: $" + balance);
     }
 
+    public void performSearchTransactions() {
+        System.out.print("Enter keyword to search: ");
+        String keyword = keyboardInput.nextLine().trim();
+
+        var results = searcher.search(keyword);
+
+        if (results.isEmpty()) {
+            System.out.println("No matching transactions found.");
+        return;
+    }
+}
+
+        System.out.println(entry);
+    }
+}
+
     public void run() {
         int selection = -1;
         while (selection != EXIT_SELECTION) {
@@ -381,13 +404,14 @@ public class MainMenu {
         return accounts;
     }
 
-    public String getCurrentAccountName() {
-        return currentAccountName;
+
+return currentAccountName;
     }
 
     public static void main(String[] args) {
         MainMenu bankApp = new MainMenu();
         bankApp.run();
+
 
     }
 }
