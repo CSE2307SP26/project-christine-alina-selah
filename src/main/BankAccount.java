@@ -80,6 +80,10 @@ public class BankAccount {
         return jointAccount;
     }
 
+    public String getSummary() {
+        return accountName + " (" + accountType + "): $" + balance;
+    }
+
     public void deposit(double amount) {
         if (amount >= 0) {
             this.balance += amount;

@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 13;
-    private static final int MAX_SELECTION = 13;
+    private static final int EXIT_SELECTION = 14;
+    private static final int MAX_SELECTION = 14;
 
     private BankAccount userAccount;
     private BankAccount secondAccount;
@@ -46,7 +46,8 @@ public class MainMenu {
         System.out.println("10. Send money with Zelle");
         System.out.println("11. Create a joint account");
         System.out.println("12. Search transaction history");
-        System.out.println("13. Exit the app");
+        System.out.println("13. View account summary");
+        System.out.println("14. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -98,10 +99,13 @@ public class MainMenu {
             case 11:
                 performCreateJointAccount();
                 break;
-          case 12:
+            case 12:
                 performSearchTransactions();
                 break;
             case 13:
+                performAccountSummary();
+                break;
+            case 14:
                 System.out.println("Goodbye");
                 break;
 
@@ -383,13 +387,23 @@ public class MainMenu {
 
         if (results.isEmpty()) {
             System.out.println("No matching transactions found.");
-        return;
+            return;
+        }
     }
-}
 
-        System.out.println(entry);
+    System.out.println(entry);
+
     }
-}
+
+    public void performAccountSummary() {
+        if (userAccount == null) {
+            System.out.println("You must log in first.");
+            return;
+        }
+
+        AccountSummaryReport report = new AccountSummaryReport(userAccount);
+        System.out.println(report.generateSummary());
+    }
 
     public void run() {
         int selection = -1;
@@ -404,14 +418,13 @@ public class MainMenu {
         return accounts;
     }
 
+    return currentAccountName;
 
-return currentAccountName;
     }
 
     public static void main(String[] args) {
         MainMenu bankApp = new MainMenu();
         bankApp.run();
-
 
     }
 }
