@@ -18,8 +18,7 @@ public class MainMenu {
     private String currentAccountName;
 
     public MainMenu() {
-        this.userAccount = new BankAccount("default", "1234", "checking", 0);
-        this.secondAccount = new BankAccount("second", "1234", "checking", 0);
+        this.userAccount = null;
         this.keyboardInput = new Scanner(System.in);
 
         // Constructing hashmap, setting default bank account, and adding said bank
@@ -28,7 +27,7 @@ public class MainMenu {
         this.currentAccountName = "default";
         this.accounts.put(this.currentAccountName, this.userAccount);
         this.accounts.put("second", this.secondAccount);
-        this.history = new ViewTransactionHistory();
+        // this.history = new ViewTransactionHistory();
 
     }
 
@@ -195,18 +194,17 @@ public class MainMenu {
     }
 
     public void createAccount(String accountName, String password, String accountType, double initialBalance) {
-        // if (accountName.isEmpty()) {
-        // throw new IllegalArgumentException("Account name cannot be empty.");
-        // }
-        // if (accounts.containsKey(accountName)) {
-        // throw new IllegalArgumentException("Account name already exists.");
-        // }
-        // if (initialBalance < 0) {
-        // throw new IllegalArgumentException("Initial balance cannot be negative.");
-        // }
+        if (accountName.isEmpty()) {
+        throw new IllegalArgumentException("Account name cannot be empty.");
+        }
+        if (accounts.containsKey(accountName)) {
+        throw new IllegalArgumentException("Account name already exists.");
+        }
+        if (initialBalance < 0) {
+        throw new IllegalArgumentException("Initial balance cannot be negative.");
+        }
 
         BankAccount newAccount = new BankAccount(accountName, password, accountType, initialBalance);
-        newAccount.deposit(initialBalance);
         accounts.put(accountName, newAccount);
         userAccount = newAccount;
         currentAccountName = accountName;
@@ -276,13 +274,37 @@ public class MainMenu {
     }
 
     public void performTransfer() {
-        double transferAmount = -1;
-        while (transferAmount < 0) {
-            System.out.println("How much money would you like transfer: ");
-            transferAmount = keyboardInput.nextInt();
-
+        if (userAccount == null) {
+            System.out.println("No account is selected. Please login in or create an account first");
         }
-        userAccount.transfer(userAccount, secondAccount, transferAmount);
+
+        if (accounts.size() < 2) {
+            System.out.println("You need at least two account to make a transfer");
+        }
+
+        System.out.println("Enter the destination account name: ");
+
+        String destinationName = keyboardInput.nextLine().trim();
+
+        if(!accounts.containsKey(destinationName)) {
+            System.out.println("Destination account does not exists");
+            return;
+        }
+
+        BankAccount desinationAccount = accounts.get(destinationName);
+
+        System.out.println("How much money would you like to transfer?");
+        double transferAmount = keyboardInput.nextDouble();
+
+        keyboardInput.nextLine();
+
+        try {
+            userAccount.transfer(userAccount, desinationAccount, transferAmount);
+            System.out.println("Transfer Successful");
+            System.out.println("New balance: $" + userAccount.getBalance());
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void performWithdrawal() {

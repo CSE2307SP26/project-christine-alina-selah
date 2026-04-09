@@ -9,10 +9,10 @@ public class BankAccount {
 
     public BankAccount(String accountName, String password, String accountType, double initialBalance) {
         if (initialBalance < 0) {
-            throw new IllegalArgumentException("Initial balance cannot be 0")
+            throw new IllegalArgumentException("Initial balance cannot be 0");
         } 
         if (accountName == null || accountName.trim().isEmpty()) {
-            throw new IllegalArgumentException("Account name cannot be empty") ;
+            throw new IllegalArgumentException("Account name cannot be empty");
         }
         if (password == null || password.trim().isEmpty()) {
             throw new IllegalArgumentException("Password cannot be empty");
@@ -30,9 +30,10 @@ public class BankAccount {
     }
 
     public void deposit(double amount) {
-        if (amount > 0) {
+        if (amount >= 0) {
             this.balance += amount;
-        } else {
+        } 
+        else {
             throw new IllegalArgumentException();
         }
     }

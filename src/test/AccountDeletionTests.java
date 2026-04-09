@@ -26,8 +26,8 @@ public class AccountDeletionTests {
     @Test
     public void testCloseAccountSuccess() {
         MainMenu menu = new MainMenu();
-        menu.createAccount("A1", 100.0);
-        menu.createAccount("A2", 200.0);
+        menu.createAccount("A1", "1234", "checking", 100.0);
+        menu.createAccount("A2", "1234", "checking", 200.0);
 
         menu.closeAccount("A1");
 
@@ -38,7 +38,7 @@ public class AccountDeletionTests {
     @Test
     public void testCloseNonexistentAccountThrowsException() {
         MainMenu menu = new MainMenu();
-        menu.createAccount("A1", 100.0);
+        menu.createAccount("A1", "1234", "checking", 100.0);
 
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> {
             menu.closeAccount("Fake");
@@ -50,7 +50,7 @@ public class AccountDeletionTests {
     @Test
     public void testCloseLastAccountThrowsException() {
         MainMenu menu = new MainMenu();
-        menu.createAccount("Only", 100.0);
+        menu.createAccount("Only", "1234", "checking", 100.0);
 
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> {
             menu.closeAccount("Only");
@@ -67,8 +67,8 @@ public class AccountDeletionTests {
         System.setIn(new ByteArrayInputStream(input.getBytes()));
 
         MainMenu menu = new MainMenu();
-        menu.createAccount("A1", 100.0);
-        menu.createAccount("A2", 200.0);
+        menu.createAccount("A1", "1234", "checking", 100.0);
+        menu.createAccount("A2", "1234", "checking", 200.0);
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
@@ -86,8 +86,9 @@ public class AccountDeletionTests {
         System.setIn(new ByteArrayInputStream(input.getBytes()));
 
         MainMenu menu = new MainMenu();
-        menu.createAccount("Checking", 100.0);
-        menu.createAccount("Savings", 200.0);
+        menu.createAccount("Checking", "1234", "checking", 100.0);
+        menu.createAccount("Savings", "1234", "checking", 200.0);
+
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
@@ -111,8 +112,8 @@ public class AccountDeletionTests {
         System.setIn(new ByteArrayInputStream(input.getBytes()));
 
         MainMenu menu = new MainMenu();
-        menu.createAccount("A1", 100.0);
-        menu.createAccount("A2", 200.0);
+        menu.createAccount("A1", "1234", "checking", 100.0);
+        menu.createAccount("A2", "1234", "checking", 200.0);
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
