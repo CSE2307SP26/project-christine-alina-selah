@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # project26
 
 ## Team Members:
@@ -25,3 +26,6 @@
 ## Is there anything that you implemented but doesn't currently work?
 
 ## What commands are needed to compile and run your code from the command line?
+=======
+# project26
+>>>>>>> development
