@@ -6,34 +6,84 @@ public class BankAccount {
     private String accountName;
     private String password;
     private String accountType;
+    private String secondOwnerName;
+    private boolean jointAccount;
 
     public BankAccount(String accountName, String password, String accountType, double initialBalance) {
-        if (initialBalance < 0) {
-            throw new IllegalArgumentException("Initial balance cannot be 0");
-        } 
+        validateAccountName(accountName);
+        validatePassword(password);
+        validateAccountType(accountType);
+        validateInitialBalance(initialBalance);
+
+        this.balance = initialBalance;
+        this.accountName = accountName;
+        this.secondOwnerName = null;
+        this.password = password;
+        this.accountType = accountType;
+        this.jointAccount = false;
+    }
+
+    public BankAccount(String accountName, String secondOwnerName, String password,
+            String accountType, double initialBalance) {
+        validateAccountName(accountName);
+        validateSecondOwnerName(secondOwnerName);
+        validatePassword(password);
+        validateAccountType(accountType);
+        validateInitialBalance(initialBalance);
+
+        this.balance = initialBalance;
+        this.accountName = accountName;
+        this.secondOwnerName = secondOwnerName;
+        this.password = password;
+        this.accountType = accountType;
+        this.jointAccount = true;
+    }
+
+    private void validateAccountName(String accountName) {
         if (accountName == null || accountName.trim().isEmpty()) {
             throw new IllegalArgumentException("Account name cannot be empty");
         }
+    }
+
+    private void validateSecondOwnerName(String secondOwnerName) {
+        if (secondOwnerName == null || secondOwnerName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Second owner name cannot be empty");
+        }
+    }
+
+    private void validatePassword(String password) {
         if (password == null || password.trim().isEmpty()) {
             throw new IllegalArgumentException("Password cannot be empty");
         }
+    }
+
+    private void validateAccountType(String accountType) {
         if (accountType == null || accountType.trim().isEmpty()) {
             throw new IllegalArgumentException("Account type cannot be empty");
         }
         if (!accountType.equalsIgnoreCase("checking") && !accountType.equalsIgnoreCase("savings")) {
-            throw new IllegalArgumentException("Account type must be savings or checkings");
+            throw new IllegalArgumentException("Account type must be savings or checking");
         }
-        this.balance = initialBalance;
-        this.accountName = accountName;
-        this.password = password;
-        this.accountType = accountType;
+    }
+
+    private void validateInitialBalance(double initialBalance) {
+        if (initialBalance < 0) {
+            throw new IllegalArgumentException("Initial balance cannot be negative");
+        }
+    }
+
+    public String getSecondOwnerName() {
+        return secondOwnerName;
+    }
+
+    public boolean isJointAccount() {
+        return jointAccount;
     }
 
     public void deposit(double amount) {
         if (amount >= 0) {
             this.balance += amount;
-        } 
-        else {
+        } else {
             throw new IllegalArgumentException();
         }
     }
