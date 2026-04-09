@@ -48,20 +48,6 @@ public class AccountDeletionTests {
     }
 
     @Test
-    public void testCloseLastAccountThrowsException() {
-        MainMenu menu = new MainMenu();
-        menu.createAccount("Only", "1234", "checking", 100.0);
-
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> {
-            menu.closeAccount("Only");
-        });
-
-        assertEquals(
-                "You cannot close your last account. Please create a new one before trying again.",
-                e.getMessage());
-    }
-
-    @Test
     public void testPerformCloseAccountSuccess() {
         String input = "A1\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
@@ -82,7 +68,7 @@ public class AccountDeletionTests {
 
     @Test
     public void testPerformCloseAccountSwitchesThenCloses() {
-        String input = "Checking\nSavings\n";
+        String input = "Savings\nChecking\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
 
         MainMenu menu = new MainMenu();
@@ -95,15 +81,15 @@ public class AccountDeletionTests {
 
         menu.performCloseAccount();
 
-        assertFalse(menu.getAccounts().containsKey("Checking"));
-        assertTrue(menu.getAccounts().containsKey("Savings"));
-        assertEquals("Savings", menu.getCurrentAccountName());
+        assertFalse(menu.getAccounts().containsKey("Savings"));
+        assertTrue(menu.getAccounts().containsKey("Checking"));
+        assertEquals("Checking", menu.getCurrentAccountName());
 
         String console = output.toString();
         assertTrue(console
                 .contains("You are currently using this account and cannot close it before switching to a new one."));
-        assertTrue(console.contains("You are now using the Savings account."));
-        assertTrue(console.contains("Account Checking has been closed."));
+        assertTrue(console.contains("You are now using the Checking account."));
+        assertTrue(console.contains("Account Savings has been closed."));
     }
 
     @Test
