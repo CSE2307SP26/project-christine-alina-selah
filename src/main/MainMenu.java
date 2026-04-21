@@ -9,7 +9,6 @@ public class MainMenu {
     private static final int MAX_SELECTION = 14;
 
     private BankAccount userAccount;
-    private BankAccount secondAccount;
     private Scanner keyboardInput;
     private TransactionHistory history;
     // Adding hashmap in order to keep track of multiple bank accounts
@@ -23,7 +22,7 @@ public class MainMenu {
         // Constructing hashmap, setting default bank account, and adding said bank
         // account to hashmap
         this.accounts = new HashMap<>();
-        this.currentAccountName = "default";
+        this.currentAccountName = null;
         this.accounts.put(this.currentAccountName, this.userAccount);
         this.accounts.put("second", this.secondAccount);
         this.history = new TransactionHistory();
@@ -182,7 +181,7 @@ public class MainMenu {
             throw new IllegalArgumentException("Email cannot be empty.");
         }
 
-        userAccount.withdraw(amount);
+        userAccount.withdrawal(userAccount, amount);
     }
 
     public void displayHistory() {
@@ -398,6 +397,9 @@ public void performSearchTransactions() {
 
     System.out.println(entry);
 
+        for(String entry : results) {
+            System.out.println(entry);
+        }
     }
 
     public void performAccountSummary() {
@@ -423,8 +425,8 @@ public void performSearchTransactions() {
         return accounts;
     }
 
-    return currentAccountName;
-
+    public String getCurrentAccountName() {
+        return currentAccountName;
     }
 
     public static void main(String[] args) {
