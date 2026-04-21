@@ -10,8 +10,7 @@ public class MainMenu {
 
     private BankAccount userAccount;
     private Scanner keyboardInput;
-    private ViewTransactionHistory history;
-    private SearchTransactionHistory searcher;
+    private TransactionHistory history;
     // Adding hashmap in order to keep track of multiple bank accounts
     private HashMap<String, BankAccount> accounts;
     private String currentAccountName;
@@ -25,7 +24,9 @@ public class MainMenu {
         this.accounts = new HashMap<>();
         this.currentAccountName = null;
         this.accounts.put(this.currentAccountName, this.userAccount);
-        // this.history = new ViewTransactionHistory();
+        this.accounts.put("second", this.secondAccount);
+        this.history = new TransactionHistory();
+
 
     }
 
@@ -376,17 +377,25 @@ public class MainMenu {
         double balance = checker.checkBalance();
         System.out.println("Your current balance is: $" + balance);
     }
+public void performSearchTransactions() {
+    System.out.print("Enter keyword to search: ");
+    String keyword = keyboardInput.nextLine().trim();
 
-    public void performSearchTransactions() {
-        System.out.print("Enter keyword to search: ");
-        String keyword = keyboardInput.nextLine().trim();
+    var results = history.search(keyword);
 
-        var results = searcher.search(keyword);
+    if (results.isEmpty()) {
+        System.out.println("No matching transactions found.");
+        return;
+    }
 
-        if (results.isEmpty()) {
-            System.out.println("No matching transactions found.");
-            return;
-        }
+    System.out.println("Matching transactions:");
+    for (String entry : results) {
+        System.out.println(entry);
+    }
+}
+
+
+    System.out.println(entry);
 
         for(String entry : results) {
             System.out.println(entry);
