@@ -26,4 +26,26 @@ public class TransactionHistoryTest {
         h.record("Withdrew $10");
         assertEquals(1, h.search("withdrew").size());
     }
+
+    @Test
+    public void testRecordWithCategoryAddsCategory() {
+        TransactionHistory h = new TransactionHistory();
+        h.record("Income", "Deposited $20");
+        assertTrue(h.viewHistory().get(0).contains("[Income]"));
+    }
+
+    @Test
+    public void testRecordWithCategoryStoresEntry() {
+        TransactionHistory h = new TransactionHistory();
+        h.record("Gift", "Deposited $10");
+        assertTrue(h.viewHistory().get(0).contains("Deposited $10"));
+    }
+
+    @Test
+    public void testSearchFindsCategorizedEntry() {
+        TransactionHistory h = new TransactionHistory();
+        h.record("Savings", "Deposited $100");
+        assertEquals(1, h.search("100").size());
+    }
+
 }

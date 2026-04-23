@@ -11,9 +11,9 @@ public class TransactionHistory {
         this.history = new ArrayList<>();
     }
 
-    public void record(String entry) {
-        history.add(entry);
-    }
+    public void record(String category, String entry) {
+    history.add("[" + category + "] " + entry);
+}
 
     public List<String> viewHistory() {
         return history;
