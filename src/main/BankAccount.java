@@ -8,6 +8,9 @@ public class BankAccount {
     private String accountType;
     private String secondOwnerName;
     private boolean jointAccount;
+    private double loanBalance;
+    private int creditScore;
+
 
     public BankAccount(String accountName, String password, String accountType, double initialBalance) {
         validateAccountName(accountName);
@@ -21,6 +24,8 @@ public class BankAccount {
         this.password = password;
         this.accountType = accountType;
         this.jointAccount = false;
+        this.loanBalance = 0;
+        this.creditScore = 650;
     }
 
     public BankAccount(String accountName, String secondOwnerName, String password,
@@ -154,5 +159,68 @@ public class BankAccount {
             throw new IllegalArgumentException("Intrest can only be apply to savings account");
         }
     }
+
+    public double getLoanBalance() {
+        return loanBalance;
+    }
+    
+    public int getCreditScore() {
+        return creditScore;
+    }
+
+    public void applyForLoan(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Loan amount must be greater than 0.");
+        }
+    
+        if (creditScore < 600) {
+            throw new IllegalArgumentException("Loan denied due to low credit score.");
+        }
+    
+        if (amount > 10000) {
+            throw new IllegalArgumentException("Loan amount exceeds maximum allowed.");
+        }
+    
+        loanBalance += amount;
+        balance += amount;
+    }
+    
+    public void makeLoanPayment(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Payment amount must be greater than 0.");
+        }
+    
+        if (balance < amount) {
+            decreaseCreditScore(15);
+            throw new IllegalArgumentException("Not enough balance to make loan payment.");
+        }
+    
+        if (loanBalance <= 0) {
+            throw new IllegalArgumentException("No outstanding loan balance.");
+        }
+    
+        if (amount > loanBalance) {
+            amount = loanBalance;
+        }
+    
+        balance -= amount;
+        loanBalance -= amount;
+        increaseCreditScore(10);
+    }
+
+    public void increaseCreditScore(int points) {
+        creditScore += points;
+        if (creditScore > 850) {
+            creditScore = 850;
+        }
+    }
+    
+    public void decreaseCreditScore(int points) {
+        creditScore -= points;
+        if (creditScore < 300) {
+            creditScore = 300;
+        }
+    }
+
 
 }

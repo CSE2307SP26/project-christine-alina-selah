@@ -16,12 +16,14 @@ public class BankAccountTest {
     private BankAccount account;
     private BankAccount account2;
     private BankAccount account3;
+    private BankAccount account4;
 
     @BeforeEach
     public void setup() {
         account = new BankAccount("testuser", "1234", "checking", 0);
         account2 = new BankAccount("account1", "1234", "checking", 0);
         account3 = new BankAccount("account2", "1234", "checking", 0);
+        account4 = new BankAccount("Alice", "1234", "checking", 100.0);
         account2.deposit(50);
         
     }
@@ -186,6 +188,113 @@ public class BankAccountTest {
         } catch (IllegalArgumentException e) {
 
         }
+    }
+
+    @Test
+    public void testApplyForLoanValidAmount() {
+        account.applyForLoan(500);
+
+        assertEquals(600.0, account4.getBalance(), 0.01);
+        assertEquals(500.0, account4.getLoanBalance(), 0.01);
+    }
+
+    @Test
+    public void testApplyForLoanInvalidAmount() {
+        try {
+            account4.applyForLoan(-100);
+            fail();
+        } catch (IllegalArgumentException e) {
+
+        }
+    }
+
+    @Test
+    public void testApplyForLoanAmountTooLarge() {
+        try {
+            account4.applyForLoan(20000);
+            fail();
+        } catch (IllegalArgumentException e) {
+
+        }
+    }
+
+    @Test
+    public void testApplyForLoanWithLowCreditScore() {
+        account4.decreaseCreditScore(100);
+
+        try {
+            account4.applyForLoan(500);
+            fail();
+        } catch (IllegalArgumentException e) {
+
+        }
+    }
+
+    @Test
+    public void testMakeLoanPaymentValidAmount() {
+        account.applyForLoan(500);
+        account.makeLoanPayment(200);
+
+        assertEquals(400.0, account4.getBalance(), 0.01);
+        assertEquals(300.0, account4.getLoanBalance(), 0.01);
+    }
+
+    @Test
+    public void testMakeLoanPaymentInvalidAmount() {
+        account4.applyForLoan(500);
+
+        try {
+            account4.makeLoanPayment(-50);
+            fail();
+        } catch (IllegalArgumentException e) {
+
+        }
+    }
+
+    @Test
+    public void testMakeLoanPaymentWithNoLoanBalance() {
+        try {
+            account4.makeLoanPayment(50);
+            fail();
+        } catch (IllegalArgumentException e) {
+
+        }
+    }
+
+    @Test
+    public void testMakeLoanPaymentWithInsufficientBalance() {
+        account4.applyForLoan(500);
+        account4.withdrawal(account4, 550);
+
+        try {
+            account4.makeLoanPayment(100);
+            fail();
+        } catch (IllegalArgumentException e) {
+
+        }
+    }
+
+    @Test
+    public void testMakeLoanPaymentGreaterThanLoanBalance() {
+        account4.applyForLoan(200);
+
+        try {
+            account4.makeLoanPayment(500);
+            fail();
+        } catch (IllegalArgumentException e) {}
+
+    }
+
+    @Test
+    public void testIncreaseCreditScore() {
+        account4.increaseCreditScore(20);
+        assertEquals(670, account4.getCreditScore());
+    }
+
+    @Test
+    public void testDecreaseCreditScore() {
+        account4.decreaseCreditScore(30);
+        assertEquals(620, account4.getCreditScore());
     }
     
 
