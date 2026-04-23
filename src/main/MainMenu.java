@@ -27,7 +27,6 @@ public class MainMenu {
         this.accounts.put(this.currentAccountName, this.userAccount);
         this.history = new TransactionHistory();
 
-
     }
 
     public void displayOptions() {
@@ -195,7 +194,7 @@ public class MainMenu {
         }
     }
 
-    public void performLogin() {
+    public void performLogin() { // ask if 22 is too long
         System.out.println("Enter account name:");
         String accountName = keyboardInput.nextLine().trim();
 
@@ -328,11 +327,30 @@ public class MainMenu {
             System.out.print("How much would you like to deposit: ");
             depositAmount = keyboardInput.nextDouble();
         }
+        System.out.println("Choose a category:");
+        System.out.println("1. Income");
+        System.out.println("2. Gift");
+        System.out.println("3. Refund");
+        System.out.println("4. Savings");
+        System.out.println("5. Other");
+
+        int choice = keyboardInput.nextInt();
+        keyboardInput.nextLine();
+
+        String category = switch (choice) {
+            case 1 -> "Income";
+            case 2 -> "Gift";
+            case 3 -> "Refund";
+            case 4 -> "Savings";
+            default -> "Other";
+        };
+
         userAccount.deposit(depositAmount);
-        history.record("Deposited $" + depositAmount);
+        history.record(category, "Deposited $" + depositAmount);
+
     }
 
-    private boolean canTransfer() {
+    public void performTransfer() { // WAY TOO LONG MAKE SHORTER
         if (userAccount == null) {
             System.out.println("No account is selected. Please login or create an account first.");
             return false;
@@ -427,7 +445,8 @@ public class MainMenu {
             return;
         }
 
-        for(String entry : results) {
+        System.out.println("Matching transactions:");
+        for (String entry : results) {
             System.out.println(entry);
         }
     }
