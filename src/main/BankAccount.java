@@ -80,6 +80,10 @@ public class BankAccount {
         return jointAccount;
     }
 
+    private boolean isSuspicious(double amount) {
+        return amount > balance * 0.5; // suspicious if > 50% of current balance
+    }
+
     public String getSummary() {
         return accountName + " (" + accountType + "): $" + balance;
     }
@@ -115,6 +119,10 @@ public class BankAccount {
 
         if (account.getBalance() < amount) {
             throw new IllegalArgumentException("Not enough balance.");
+        }
+
+        if (isSuspicious(amount)) {
+            System.out.println("⚠️ Fraud Alert: This withdrawal is unusually high.");
         }
 
         account.balance -= amount;

@@ -4,6 +4,7 @@ import main.BankAccount;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -44,6 +45,11 @@ public class BankAccountTest {
     }
 
     @Test
+    public void testSmallWithdrawalNotSuspicious() {
+        BankAccount a = new BankAccount("acct", "1234", "checking", 100);
+        assertDoesNotThrow(() -> a.withdrawal(a, 10));
+    }
+
     public void testWithdrawalValidAmount() {
         account.deposit(50);
         account.withdrawal(account, 25);
