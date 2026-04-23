@@ -4,6 +4,7 @@ import main.BankAccount;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +26,12 @@ public class BankAccountTest {
         } catch (IllegalArgumentException e) {
             // do nothing, test passes
         }
+    }
+
+    @Test
+    public void testSmallWithdrawalNotSuspicious() {
+        BankAccount a = new BankAccount("acct", "1234", "checking", 100);
+        assertDoesNotThrow(() -> a.withdrawal(a, 10));
     }
 
 }
