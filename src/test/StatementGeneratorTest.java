@@ -90,4 +90,18 @@ public class StatementGeneratorTest {
 
         assertTrue(statement.contains("Generated: "));
     }
+
+    @Test
+    public void testSaveStatementToFileCreatesFile() {
+        BankAccount account = new BankAccount("Alice", "1234", "checking", 100.0);
+        TransactionHistory history = new TransactionHistory();
+        StatementGenerator generator = new StatementGenerator(account, history);
+
+        generator.saveStatementToFile();
+
+        java.io.File file = new java.io.File("Alice_statement.txt");
+        assertTrue(file.exists());
+
+        file.delete();
+}
 }

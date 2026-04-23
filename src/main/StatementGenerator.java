@@ -61,8 +61,8 @@ public class StatementGenerator {
         return builder.toString();
     }
 
-    private void saveStatementToFile() {
-        String fileName = account.getAccountName() + "_statment.txt";
+    public void saveStatementToFile() {
+        String fileName = account.getAccountName() + "_statement.txt";
 
       try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
         writer.print(generateStatement());

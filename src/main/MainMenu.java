@@ -222,7 +222,7 @@ public class MainMenu {
     public void performApplyIntrest() {
         try {
             userAccount.applyIntrest();
-            history.record("Intrest applied, New balance: $" + userAccount.getBalance())
+            history.record("Intrest applied, New balance: $" + userAccount.getBalance());
             System.out.println("Intrest applied, New balance: $" + userAccount.getBalance());
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
@@ -469,6 +469,7 @@ public class MainMenu {
             return;
         }
         StatementGenerator generator = new StatementGenerator(userAccount, history);
+        generator.saveStatementToFile();
         System.out.println(generator.generateStatement());
     }
 
