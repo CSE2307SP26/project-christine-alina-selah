@@ -6,8 +6,8 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 19;
-    private static final int MAX_SELECTION = 19;
+    private static final int EXIT_SELECTION = 21;
+    private static final int MAX_SELECTION = 21;
 
     private BankAccount userAccount;
     private Scanner keyboardInput;
@@ -15,15 +15,16 @@ public class MainMenu {
     // Adding hashmap in order to keep track of multiple bank accounts
     private HashMap<String, BankAccount> accounts;
     private String currentAccountName;
+    private StockService stockService;
 
     public MainMenu() {
         this.userAccount = null;
         this.keyboardInput = new Scanner(System.in);
-
-        // Constructing hashmap, setting default bank account, and adding said bank
-        // account to hashmap
         this.accounts = new HashMap<>();
         this.currentAccountName = null;
+        this.history = new ViewTransactionHistory();
+        this.searcher = new SearchTransactionHistory(this.history);
+        this.stockService = new StockService();
         this.accounts.put(this.currentAccountName, this.userAccount);
         this.history = new TransactionHistory();
 
@@ -50,7 +51,9 @@ public class MainMenu {
         System.out.println("16. Make a loan payment");
         System.out.println("17. Check credit score");
         System.out.println("18. View loan balance");
-        System.out.println("19. Exit the app");
+        System.out.println("19. Buy stock");
+        System.out.println("20. View stock portfolio");
+        System.out.println("21. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -122,13 +125,62 @@ public class MainMenu {
             case 18:
                 performViewLoanBalance();
                 break;
-                
             case 19:
+                performBuyStock();
+                break;
+            case 20:
+                performViewPortfolio();
+                break;
+                
+            case 21:
                 System.out.println("Goodbye");
                 break;
 
             default:
                 break;
+        }
+    }
+
+    public void displayPopularStocks() {
+        System.out.println("Popular stocks:");
+        System.out.println("AAPL");
+        System.out.println("MSFT");
+        System.out.println("GOOGL");
+        System.out.println("AMZN");
+        System.out.println("TSLA");
+    }
+
+    public void performViewPortfolio() {
+        if (userAccount == null) {
+            System.out.println("You must log in first.");
+            return;
+        }
+
+        System.out.println("Portfolio:");
+        System.out.println(userAccount.getPortfolioSummary());
+    }
+
+    public void performBuyStock() {
+        try {
+            if (userAccount == null) {
+                System.out.println("You must log in first.");
+                return;
+            }
+
+            displayPopularStocks();
+            System.out.print("Enter stock ticker: ");
+            String ticker = keyboardInput.nextLine().trim();
+
+            System.out.print("Enter number of shares: ");
+            double shares = keyboardInput.nextDouble();
+            keyboardInput.nextLine();
+
+            double price = stockService.getPrice(ticker);
+            userAccount.buyStock(ticker, shares, price);
+            history.record("Bought " + shares + " shares of " + ticker.toUpperCase() + " @ $" + price);
+            System.out.println("Purchased " + shares + " shares of " + ticker.toUpperCase() + " at $" + price);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
     }
 

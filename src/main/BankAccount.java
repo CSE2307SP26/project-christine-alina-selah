@@ -1,5 +1,7 @@
 package main;
 
+import java.util.HashMap;
+
 public class BankAccount {
 
     private double balance;
@@ -8,6 +10,7 @@ public class BankAccount {
     private String accountType;
     private String secondOwnerName;
     private boolean jointAccount;
+    private HashMap<String, StockHolding> portfolio;
     private double loanBalance;
     private int creditScore;
 
@@ -24,6 +27,7 @@ public class BankAccount {
         this.password = password;
         this.accountType = accountType;
         this.jointAccount = false;
+        this.portfolio = new HashMap<>();
         this.loanBalance = 0;
         this.creditScore = 650;
     }
@@ -42,6 +46,44 @@ public class BankAccount {
         this.password = password;
         this.accountType = accountType;
         this.jointAccount = true;
+        this.portfolio = new HashMap<>();
+    }
+
+    public String getPortfolioSummary() {
+        if (portfolio.isEmpty()) {
+            return "No stocks owned.";
+        }
+
+        String summary = "";
+        for (StockHolding holding : portfolio.values()) {
+            summary += holding.summary() + "\n";
+        }
+        return summary;
+    }
+
+    private void addHolding(String ticker, double shares, double price) {
+        String symbol = ticker.toUpperCase();
+
+        if (portfolio.containsKey(symbol)) {
+            portfolio.get(symbol).buyMore(shares, price);
+        } else {
+            portfolio.put(symbol, new StockHolding(symbol, shares, price));
+        }
+    }
+
+    public void buyStock(String ticker, double shares, double price) {
+        if (ticker == null || ticker.trim().isEmpty()) {
+            throw new IllegalArgumentException("Ticker cannot be empty.");
+        }
+        if (shares <= 0 || price <= 0) {
+            throw new IllegalArgumentException("Shares and price must be greater than 0.");
+        }
+        double totalCost = shares * price;
+        if (balance < totalCost) {
+            throw new IllegalArgumentException("Not enough balance.");
+        }
+        balance -= totalCost;
+        addHolding(ticker, shares, price);
     }
 
     private void validateAccountName(String accountName) {
