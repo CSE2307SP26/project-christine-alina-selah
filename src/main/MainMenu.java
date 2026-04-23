@@ -1,17 +1,17 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 16;
-    private static final int MAX_SELECTION = 16;
+    private static final int EXIT_SELECTION = 21;
+    private static final int MAX_SELECTION = 21;
 
     private BankAccount userAccount;
     private Scanner keyboardInput;
-    private ViewTransactionHistory history;
-    private SearchTransactionHistory searcher;
+    private TransactionHistory history;
     // Adding hashmap in order to keep track of multiple bank accounts
     private HashMap<String, BankAccount> accounts;
     private String currentAccountName;
@@ -25,6 +25,9 @@ public class MainMenu {
         this.history = new ViewTransactionHistory();
         this.searcher = new SearchTransactionHistory(this.history);
         this.stockService = new StockService();
+        this.accounts.put(this.currentAccountName, this.userAccount);
+        this.history = new TransactionHistory();
+
     }
 
     public void displayOptions() {
@@ -43,9 +46,14 @@ public class MainMenu {
         System.out.println("11. Create a joint account");
         System.out.println("12. Search transaction history");
         System.out.println("13. View account summary");
-        System.out.println("14. Buy stock");
-        System.out.println("15. View stock portfolio");
-        System.out.println("16. Exit the app");
+        System.out.println("14. Generate bank statement");
+        System.out.println("15. Apply for a loan");
+        System.out.println("16. Make a loan payment");
+        System.out.println("17. Check credit score");
+        System.out.println("18. View loan balance");
+        System.out.println("19. Buy stock");
+        System.out.println("20. View stock portfolio");
+        System.out.println("21. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -102,14 +110,29 @@ public class MainMenu {
                 break;
             case 13:
                 performAccountSummary();
-                break;
             case 14:
-                performBuyStock();
+                performGenerateStatement();
                 break;
             case 15:
-                performViewPortfolio();
+                performApplyForLoan();
                 break;
             case 16:
+                performMakeLoanPayment();
+                break;
+            case 17:
+                performCheckCreditScore();
+                break;
+            case 18:
+                performViewLoanBalance();
+                break;
+            case 19:
+                performBuyStock();
+                break;
+            case 20:
+                performViewPortfolio();
+                break;
+                
+            case 21:
                 System.out.println("Goodbye");
                 break;
 
@@ -218,6 +241,8 @@ public class MainMenu {
             keyboardInput.nextLine();
 
             sendZelle(email, amount);
+            history.
+            history.record("Zelle $" + amount + " to" + email);
             System.out.println("Money sent to " + email);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
@@ -239,7 +264,7 @@ public class MainMenu {
         }
     }
 
-    public void performLogin() {
+    public void performLogin() { // ask if 22 is too long
         System.out.println("Enter account name:");
         String accountName = keyboardInput.nextLine().trim();
 
@@ -266,6 +291,7 @@ public class MainMenu {
     public void performApplyIntrest() {
         try {
             userAccount.applyIntrest();
+            history.record("Intrest applied, New balance: $" + userAccount.getBalance());
             System.out.println("Intrest applied, New balance: $" + userAccount.getBalance());
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
@@ -371,43 +397,94 @@ public class MainMenu {
             System.out.print("How much would you like to deposit: ");
             depositAmount = keyboardInput.nextDouble();
         }
+        System.out.println("Choose a category:");
+        System.out.println("1. Income");
+        System.out.println("2. Gift");
+        System.out.println("3. Refund");
+        System.out.println("4. Savings");
+        System.out.println("5. Other");
+
+        int choice = keyboardInput.nextInt();
+        keyboardInput.nextLine();
+
+        String category = switch (choice) {
+            case 1 -> "Income";
+            case 2 -> "Gift";
+            case 3 -> "Refund";
+            case 4 -> "Savings";
+            default -> "Other";
+        };
+
         userAccount.deposit(depositAmount);
-        history.record("Deposited $" + depositAmount);
+        history.record(category, "Deposited $" + depositAmount);
+
+    }
+
+    private String promptForDestinationAccount() {
+        System.out.println("Enter the destination account name: ");
+        return keyboardInput.nextLine().trim();
+    }
+
+    private BankAccount getValidDestinationAccount(String destinationName) {
+        if (!accounts.containsKey(destinationName)) {
+            System.out.println("Destination account does not exist.");
+            return null;
+        }
+    
+        BankAccount destinationAccount = accounts.get(destinationName);
+    
+        if (destinationAccount == userAccount) {
+            System.out.println("Cannot transfer to the same account.");
+            return null;
+        }
+    
+        return destinationAccount;
+    }
+
+    private double promptForTransferAmount() {
+        System.out.println("How much money would you like to transfer?");
+        double transferAmount = keyboardInput.nextDouble();
+        keyboardInput.nextLine();
+        return transferAmount;
+    }
+
+    private boolean canTransfer() {
+        if (userAccount == null) {
+            System.out.println("No account is selected. Please login or create an account first.");
+            return false;
+        }
+    
+        if (accounts.size() < 2) {
+            System.out.println("You need at least two accounts to make a transfer.");
+            return false;
+        }
+    
+        return true;
     }
 
     public void performTransfer() {
-        if (userAccount == null) {
-            System.out.println("No account is selected. Please login in or create an account first");
-        }
-
-        if (accounts.size() < 2) {
-            System.out.println("You need at least two account to make a transfer");
-        }
-
-        System.out.println("Enter the destination account name: ");
-
-        String destinationName = keyboardInput.nextLine().trim();
-
-        if (!accounts.containsKey(destinationName)) {
-            System.out.println("Destination account does not exists");
+        if (!canTransfer()) {
             return;
         }
-
-        BankAccount desinationAccount = accounts.get(destinationName);
-
-        System.out.println("How much money would you like to transfer?");
-        double transferAmount = keyboardInput.nextDouble();
-
-        keyboardInput.nextLine();
-
+    
+        String destinationName = promptForDestinationAccount();
+        BankAccount destinationAccount = getValidDestinationAccount(destinationName);
+        if (destinationAccount == null) {
+            return;
+        }
+    
+        double transferAmount = promptForTransferAmount();
         try {
-            userAccount.transfer(userAccount, desinationAccount, transferAmount);
-            System.out.println("Transfer Successful");
+            userAccount.transfer(userAccount, destinationAccount, transferAmount);
+            System.out.println("Transfer successful.");
             System.out.println("New balance: $" + userAccount.getBalance());
+            history.record("Transferred $" + transferAmount + " to " + destinationAccount.getAccountName());
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
     }
+
+    
 
     public void performWithdrawal() {
         double withdrawlAmount = -1;
@@ -416,6 +493,7 @@ public class MainMenu {
             System.out.println("How much would you like to withdrawl: ");
             withdrawlAmount = keyboardInput.nextDouble();
         }
+        history.record("$ " + withdrawlAmount + " is withdrawl, Remaining Balance $" + userAccount.getBalance());
 
         userAccount.withdrawal(userAccount, withdrawlAmount);
     }
@@ -430,13 +508,14 @@ public class MainMenu {
         System.out.print("Enter keyword to search: ");
         String keyword = keyboardInput.nextLine().trim();
 
-        var results = searcher.search(keyword);
+        var results = history.search(keyword);
 
         if (results.isEmpty()) {
             System.out.println("No matching transactions found.");
             return;
         }
 
+        System.out.println("Matching transactions:");
         for (String entry : results) {
             System.out.println(entry);
         }
@@ -467,6 +546,79 @@ public class MainMenu {
 
     public String getCurrentAccountName() {
         return currentAccountName;
+    }
+
+    public void performGenerateStatement(){
+        if (userAccount == null) {
+            System.out.println("You must login first");
+            return;
+        }
+        if (history == null) {
+            System.out.println("Transaction history is null");
+            return;
+        }
+        StatementGenerator generator = new StatementGenerator(userAccount, history);
+        generator.saveStatementToFile();
+        System.out.println(generator.generateStatement());
+    }
+
+    public void performApplyForLoan() {
+        if (userAccount == null) {
+            System.out.println("You must log in first.");
+            return;
+        }
+    
+        System.out.print("Enter loan amount: ");
+        double amount = keyboardInput.nextDouble();
+        keyboardInput.nextLine();
+    
+        try {
+            userAccount.applyForLoan(amount);
+            history.record("Loan approved for $" + amount);
+            System.out.println("Loan approved.");
+            System.out.println("New balance: $" + userAccount.getBalance());
+            System.out.println("Loan balance: $" + userAccount.getLoanBalance());
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void performMakeLoanPayment() {
+        if (userAccount == null) {
+            System.out.println("You must log in first.");
+            return;
+        }
+    
+        System.out.print("Enter payment amount: ");
+        double amount = keyboardInput.nextDouble();
+        keyboardInput.nextLine();
+    
+        try {
+            userAccount.makeLoanPayment(amount);
+            history.record("Loan payment made: $" + amount);
+            System.out.println("Loan payment successful.");
+            System.out.println("Remaining loan balance: $" + userAccount.getLoanBalance());
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void performCheckCreditScore() {
+        if (userAccount == null) {
+            System.out.println("You must log in first.");
+            return;
+        }
+    
+        System.out.println("Your credit score is: " + userAccount.getCreditScore());
+    }
+
+    public void performViewLoanBalance() {
+        if (userAccount == null) {
+            System.out.println("You must log in first.");
+            return;
+        }
+    
+        System.out.println("Your current loan balance is: $" + userAccount.getLoanBalance());
     }
 
     public static void main(String[] args) {
