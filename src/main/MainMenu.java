@@ -1,12 +1,13 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 14;
-    private static final int MAX_SELECTION = 14;
+    private static final int EXIT_SELECTION = 15;
+    private static final int MAX_SELECTION = 15;
 
     private BankAccount userAccount;
     private Scanner keyboardInput;
@@ -24,7 +25,6 @@ public class MainMenu {
         this.accounts = new HashMap<>();
         this.currentAccountName = null;
         this.accounts.put(this.currentAccountName, this.userAccount);
-        this.accounts.put("second", this.secondAccount);
         this.history = new TransactionHistory();
 
     }
@@ -45,7 +45,8 @@ public class MainMenu {
         System.out.println("11. Create a joint account");
         System.out.println("12. Search transaction history");
         System.out.println("13. View account summary");
-        System.out.println("14. Exit the app");
+        System.out.println("14. Generate bank statement");
+        System.out.println("15. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -102,8 +103,10 @@ public class MainMenu {
                 break;
             case 13:
                 performAccountSummary();
-                break;
             case 14:
+                performGenerateStatement();
+                break;
+            case 15:
                 System.out.println("Goodbye");
                 break;
 
@@ -169,6 +172,7 @@ public class MainMenu {
             keyboardInput.nextLine();
 
             sendZelle(email, amount);
+            history.record("Zelle $" + amount + " to" + email);
             System.out.println("Money sent to " + email);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
@@ -217,6 +221,7 @@ public class MainMenu {
     public void performApplyIntrest() {
         try {
             userAccount.applyIntrest();
+            history.record("Intrest applied, New balance: $" + userAccount.getBalance());
             System.out.println("Intrest applied, New balance: $" + userAccount.getBalance());
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
@@ -347,37 +352,69 @@ public class MainMenu {
 
     public void performTransfer() { // WAY TOO LONG MAKE SHORTER
         if (userAccount == null) {
-            System.out.println("No account is selected. Please login in or create an account first");
+            System.out.println("No account is selected. Please login or create an account first.");
+            return false;
         }
-
+    
         if (accounts.size() < 2) {
-            System.out.println("You need at least two account to make a transfer");
+            System.out.println("You need at least two accounts to make a transfer.");
+            return false;
         }
+    
+        return true;
+    }
 
+    private String promptForDestinationAccount() {
         System.out.println("Enter the destination account name: ");
+        return keyboardInput.nextLine().trim();
+    }
 
-        String destinationName = keyboardInput.nextLine().trim();
-
+    private BankAccount getValidDestinationAccount(String destinationName) {
         if (!accounts.containsKey(destinationName)) {
-            System.out.println("Destination account does not exists");
-            return;
+            System.out.println("Destination account does not exist.");
+            return null;
         }
+    
+        BankAccount destinationAccount = accounts.get(destinationName);
+    
+        if (destinationAccount == userAccount) {
+            System.out.println("Cannot transfer to the same account.");
+            return null;
+        }
+    
+        return destinationAccount;
+    }
 
-        BankAccount desinationAccount = accounts.get(destinationName);
-
+    private double promptForTransferAmount() {
         System.out.println("How much money would you like to transfer?");
         double transferAmount = keyboardInput.nextDouble();
-
         keyboardInput.nextLine();
+        return transferAmount;
+    }
 
+    public void performTransfer() {
+        if (!canTransfer()) {
+            return;
+        }
+    
+        String destinationName = promptForDestinationAccount();
+        BankAccount destinationAccount = getValidDestinationAccount(destinationName);
+        if (destinationAccount == null) {
+            return;
+        }
+    
+        double transferAmount = promptForTransferAmount();
         try {
-            userAccount.transfer(userAccount, desinationAccount, transferAmount);
-            System.out.println("Transfer Successful");
+            userAccount.transfer(userAccount, destinationAccount, transferAmount);
+            System.out.println("Transfer successful.");
             System.out.println("New balance: $" + userAccount.getBalance());
+            history.record("Transferred $" + transferAmount + " to " + destinationAccount.getAccountName());
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
     }
+
+    
 
     public void performWithdrawal() {
         double withdrawlAmount = -1;
@@ -386,6 +423,7 @@ public class MainMenu {
             System.out.println("How much would you like to withdrawl: ");
             withdrawlAmount = keyboardInput.nextDouble();
         }
+        history.record("$ " + withdrawlAmount + " is withdrawl, Remaining Balance $" + userAccount.getBalance());
 
         userAccount.withdrawal(userAccount, withdrawlAmount);
     }
@@ -438,6 +476,20 @@ public class MainMenu {
 
     public String getCurrentAccountName() {
         return currentAccountName;
+    }
+
+    public void performGenerateStatement(){
+        if (userAccount == null) {
+            System.out.println("You must login first");
+            return;
+        }
+        if (history == null) {
+            System.out.println("Transaction history is null");
+            return;
+        }
+        StatementGenerator generator = new StatementGenerator(userAccount, history);
+        generator.saveStatementToFile();
+        System.out.println(generator.generateStatement());
     }
 
     public static void main(String[] args) {
