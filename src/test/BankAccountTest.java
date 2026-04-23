@@ -2,8 +2,7 @@ package test;
 
 import main.BankAccount;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -17,6 +16,7 @@ public class BankAccountTest {
     private BankAccount account2;
     private BankAccount account3;
     private BankAccount account4;
+    private BankAccount account5;
 
     @BeforeEach
     public void setup() {
@@ -24,6 +24,7 @@ public class BankAccountTest {
         account2 = new BankAccount("account1", "1234", "checking", 0);
         account3 = new BankAccount("account2", "1234", "checking", 0);
         account4 = new BankAccount("Alice", "1234", "checking", 100.0);
+        account5 = new BankAccount("testUser", "1234", "checking", 1000.0);
         account2.deposit(50);
         
     }
@@ -192,7 +193,7 @@ public class BankAccountTest {
 
     @Test
     public void testApplyForLoanValidAmount() {
-        account.applyForLoan(500);
+        account4.applyForLoan(500);
 
         assertEquals(600.0, account4.getBalance(), 0.01);
         assertEquals(500.0, account4.getLoanBalance(), 0.01);
@@ -232,8 +233,8 @@ public class BankAccountTest {
 
     @Test
     public void testMakeLoanPaymentValidAmount() {
-        account.applyForLoan(500);
-        account.makeLoanPayment(200);
+        account4.applyForLoan(500);
+        account4.makeLoanPayment(200);
 
         assertEquals(400.0, account4.getBalance(), 0.01);
         assertEquals(300.0, account4.getLoanBalance(), 0.01);
@@ -295,6 +296,61 @@ public class BankAccountTest {
     public void testDecreaseCreditScore() {
         account4.decreaseCreditScore(30);
         assertEquals(620, account4.getCreditScore());
+    }
+
+    @Test
+    public void testSendZelleSuccess() {
+        double amountToSend = 200.0;
+        double initialBalance = account5.getBalance();
+
+        // Call the method directly for testing
+        account5.withdrawal(account5, amountToSend);
+
+        // Check if balance decreased correctly
+        assertEquals(initialBalance - amountToSend, account5.getBalance(), 0.01);
+    }
+
+    @Test
+    public void testSendZelleZeroAmount() {
+        double amountToSend = 0.0;
+        double initialBalance = account5.getBalance();
+
+        try {
+            account5.withdrawal(account5, amountToSend);
+            fail();
+        } catch(IllegalArgumentException e) {}
+
+        // Balance should remain unchanged
+        assertEquals(initialBalance, account5.getBalance(), 0.01);
+    }
+    @Test
+    public void testSendZelleNegativeAmount() {
+        double amountToSend = -50.0;
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            account5.withdrawal(account5, amountToSend);
+        });
+    }
+
+    @Test
+    public void testSendZelleInsufficientFunds() {
+        double amountToSend = 1500.0;
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            account5.withdrawal(account5, amountToSend);
+        });
+    }   
+
+    @Test
+    public void testSendZelleMultipleTimes() {
+        double firstAmount = 100.0;
+        double secondAmount = 200.0;
+        double initialBalance = account5.getBalance();
+
+        account5.withdrawal(account5, firstAmount);
+        account5.withdrawal(account5, secondAmount);
+
+        assertEquals(initialBalance - firstAmount - secondAmount, account5.getBalance(), 0.01);
     }
     
 
