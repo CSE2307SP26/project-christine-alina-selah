@@ -15,6 +15,10 @@ public class TransactionHistory {
     history.add("[" + category + "] " + entry);
 }
 
+    public void record(String entry) {
+        history.add(entry);
+    }
+
     public List<String> viewHistory() {
         return history;
     }
